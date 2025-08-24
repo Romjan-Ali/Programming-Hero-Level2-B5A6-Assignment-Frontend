@@ -4,11 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
+import { useDepositMutation } from '@/redux/features/user/user.api'
+
 const Deposit: React.FC = () => {
   const [amount, setAmount] = useState('')
   const [agentId, setAgentId] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
+
+  // RTK Query mutation hook
+  const [deposit, { isLoading }] = useDepositMutation()
 
   const handleDeposit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -16,16 +21,13 @@ const Deposit: React.FC = () => {
     setMessage('')
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      setMessage(`✅ Successfully deposited ৳${amount} via agent ${agentId}`)
+      const result = await deposit({ amount: Number(amount) }).unwrap()
+      setMessage(`✅ Successfully deposited ৳${result?.data?.amount || amount}`)
       setAmount('')
-      setAgentId('')
-    } catch (error) {
-      setMessage('❌ Failed to deposit money. Try again.')
-    } finally {
-      setLoading(false)
+    } catch (error: any) {
+      setMessage(
+        error?.data?.message || '❌ Failed to deposit money. Try again.'
+      )
     }
   }
 
@@ -62,8 +64,8 @@ const Deposit: React.FC = () => {
                 min={10}
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Processing...' : 'Deposit'}
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? 'Processing...' : 'Deposit'}
             </Button>
           </form>
           {message && (

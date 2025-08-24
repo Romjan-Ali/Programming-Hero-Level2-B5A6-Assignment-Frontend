@@ -15,7 +15,7 @@ export const authApi = baseApi.injectEndpoints({
         url: '/auth/logout',
         method: 'POST',
       }),
-      invalidatesTags: ['USER'],
+      invalidatesTags: ['User'],
     }),
     register: builder.mutation({
       query: (userInfo) => ({
@@ -43,7 +43,7 @@ export const authApi = baseApi.injectEndpoints({
         url: '/user/me',
         method: 'GET',
       }),
-      providesTags: ['USER'],
+      providesTags: ['User'],
     }),
     refreshToken: builder.mutation({
       query: () => ({

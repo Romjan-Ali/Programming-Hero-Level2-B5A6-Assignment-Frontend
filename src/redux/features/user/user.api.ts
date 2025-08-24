@@ -1,10 +1,7 @@
-import axiosBaseQuery from '@/redux/axiosBaseQuery'
-import { createApi } from '@reduxjs/toolkit/query/react'
 
-export const userApi = createApi({
-  reducerPath: 'userApi',
-  baseQuery: axiosBaseQuery(),
-  tagTypes: ['User', 'Transactions'],
+import { baseApi } from '@/redux/baseApi'
+
+export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // USER
     getUserInfo: builder.query({
@@ -26,7 +23,8 @@ export const userApi = createApi({
     // TRANSACTIONS
     getTransactions: builder.query({
       query: ({ filterType, dateRange }) => {
-        let query = '/transaction?'
+        console.log({filterType, dateRange})
+        let query = '/transaction/my-history?'
         if (filterType && filterType !== 'all') query += `type=${filterType}&`
         if (dateRange?.from) query += `from=${dateRange.from}&`
         if (dateRange?.to) query += `to=${dateRange.to}`
@@ -39,7 +37,7 @@ export const userApi = createApi({
     }),
     deposit: builder.mutation({
       query: (body) => ({
-        url: '/transaction/deposit',
+        url: '/wallet/top-up',
         method: 'POST',
         data: body,
       }),

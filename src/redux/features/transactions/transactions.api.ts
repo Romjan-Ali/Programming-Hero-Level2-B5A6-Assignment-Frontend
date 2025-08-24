@@ -1,7 +1,7 @@
 import { baseApi } from '@/redux/baseApi'
 import type {} from '@/types'
 
-export const authApi = baseApi.injectEndpoints({
+export const transactionsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getTransactions: builder.query({
       query: ({ page = 1, limit = 10, type, startDate, endDate }) => {
@@ -20,4 +20,4 @@ export const authApi = baseApi.injectEndpoints({
   }),
 })
 
-export const { useGetTransactionsQuery } = authApi
+export const { useGetTransactionsQuery } = transactionsApi
