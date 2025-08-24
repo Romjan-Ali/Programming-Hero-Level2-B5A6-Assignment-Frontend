@@ -63,7 +63,7 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        Component: withAuth(DashboardLayout, role.user as TRole),
+        Component: withAuth(DashboardLayout, role.agent as TRole),
         path: '/agent',
         children: [
           {
@@ -78,7 +78,7 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        Component: withAuth(DashboardLayout, role.user as TRole),
+        Component: withAuth(DashboardLayout, role.admin as TRole),
         path: '/admin',
         children: [
           { index: true, element: <Navigate to="/admin/dashboard" /> },

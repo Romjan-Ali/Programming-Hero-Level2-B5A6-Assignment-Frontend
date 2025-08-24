@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import {
@@ -11,17 +11,9 @@ import {
 import { Button } from '@/components/ui/button'
 import { format } from 'date-fns'
 
-// Example type
-type Transaction = {
-  id: string
-  type: 'deposit' | 'withdraw' | 'send' | 'receive'
-  amount: number
-  date: string
-  recipient?: string
-}
+import { useGetTransactionsQuery } from '@/redux/features/user/user.api'
 
 const UserTransactions = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([])
   const [filterType, setFilterType] = useState<string>('all')
   const [dateRange, setDateRange] = useState<{ from: string; to: string }>({
     from: '',
@@ -30,45 +22,23 @@ const UserTransactions = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 5
 
-  // Fetch or mock transactions
-  useEffect(() => {
-    const mockData: Transaction[] = [
-      { id: '1', type: 'deposit', amount: 5000, date: '2025-08-22' },
-      {
-        id: '2',
-        type: 'send',
-        amount: 1500,
-        date: '2025-08-21',
-        recipient: 'user@example.com',
-      },
-      { id: '3', type: 'withdraw', amount: 2000, date: '2025-08-20' },
-      {
-        id: '4',
-        type: 'receive',
-        amount: 3000,
-        date: '2025-08-19',
-        recipient: 'friend@example.com',
-      },
-      { id: '5', type: 'deposit', amount: 1000, date: '2025-08-18' },
-      {
-        id: '6',
-        type: 'send',
-        amount: 2500,
-        date: '2025-08-17',
-        recipient: 'user2@example.com',
-      },
-    ]
-    setTransactions(mockData)
-  }, [])
+  const { data: transactions } = useGetTransactionsQuery({
+    filterType,
+    dateRange,
+  })
+
+  console.log({ transactions })
 
   // Filter transactions
-  const filteredTransactions = transactions.filter((t) => {
-    const matchType = filterType === 'all' || t.type === filterType
-    const matchDate =
-      (!dateRange.from || new Date(t.date) >= new Date(dateRange.from)) &&
-      (!dateRange.to || new Date(t.date) <= new Date(dateRange.to))
-    return matchType && matchDate
-  })
+  const filteredTransactions = transactions?.data
+    ? transactions?.data?.filter((t) => {
+        const matchType = filterType === 'all' || t.type === filterType
+        const matchDate =
+          (!dateRange.from || new Date(t.date) >= new Date(dateRange.from)) &&
+          (!dateRange.to || new Date(t.date) <= new Date(dateRange.to))
+        return matchType && matchDate
+      })
+    : []
 
   // Pagination
   const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage)
@@ -76,6 +46,14 @@ const UserTransactions = () => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   )
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return 'N/A'
+    const parsed = new Date(dateString)
+    return isNaN(parsed.getTime())
+      ? 'Invalid Date'
+      : format(parsed, 'MM/dd/yyyy')
+  }
 
   return (
     <Card className="w-full max-w-4xl mx-auto my-4">
@@ -141,12 +119,10 @@ const UserTransactions = () => {
                   key={t.id}
                   className="border-t border-gray-200 dark:border-gray-700"
                 >
-                  <td className="px-4 py-2">
-                    {format(new Date(t.date), 'yyyy-MM-dd')}
-                  </td>
-                  <td className="px-4 py-2 capitalize">{t.type}</td>
+                  <td className="px-4 py-2">{formatDate(t.createdAt)}</td>
+                  <td className="px-4 py-2 uppercase">{t.type}</td>
                   <td className="px-4 py-2">৳{t.amount}</td>
-                  <td className="px-4 py-2">{t.recipient || '-'}</td>
+                  <td className="px-4 py-2">{t?.to?.name || '-'}</td>
                 </tr>
               ))
             )}

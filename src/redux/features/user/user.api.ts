@@ -22,12 +22,12 @@ export const userApi = baseApi.injectEndpoints({
 
     // TRANSACTIONS
     getTransactions: builder.query({
-      query: ({ filterType, dateRange }) => {
-        console.log({filterType, dateRange})
+      query: ({ filterType, dateRange }) => {        
         let query = '/transaction/my-history?'
         if (filterType && filterType !== 'all') query += `type=${filterType}&`
         if (dateRange?.from) query += `from=${dateRange.from}&`
         if (dateRange?.to) query += `to=${dateRange.to}`
+        console.log('query', query)
         return {
           url: query,
           method: 'GET',
