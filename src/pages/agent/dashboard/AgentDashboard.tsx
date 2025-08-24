@@ -9,6 +9,7 @@ import {
   useCashOutMutation,
 } from '@/redux/features/agent/agent.api'
 import { useWalletQuery } from '@/redux/features/wallet/wallet.api'
+import { toast } from 'sonner'
 
 const AgentDashboard: React.FC = () => {
   const [cashInUserId, setCashInUserId] = useState('')
@@ -19,17 +20,46 @@ const AgentDashboard: React.FC = () => {
   const [cashOutAmount, setCashOutAmount] = useState('')
   const [cashOutReference, setCashOutReference] = useState('')
 
-  const [cashIn] = useCashInMutation()
-  const [cashOut] = useCashOutMutation()
-  const { wallet } = useWalletQuery(undefined)
+  const [cashIn, { isLoading: cashInLoading }] = useCashInMutation()
+  const [cashOut, { isLoading: cashOutLoading }] = useCashOutMutation()
+  const { data: wallet } = useWalletQuery(undefined)
 
-  const handleSubmitCashIn = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitCashIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log({ cashInUserId, cashInAmount, cashInReference })
+
+    try {
+      await cashIn({
+        toUserId: cashInUserId,
+        amount: Number(cashInAmount),
+        reference: cashInReference,
+      }).unwrap()
+
+      setCashInAmount('')
+      setCashInReference('')
+
+      toast.success('Cash In successfully')
+    } catch (error: any) {
+      toast.error(error?.data?.message || 'Something went wrong')
+    }
   }
 
-  const handleSubmitCashOut = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitCashOut = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    try {
+      await cashOut({
+        toUserId: cashOutUserId,
+        amount: Number(cashOutAmount),
+        reference: cashOutReference,
+      }).unwrap()
+
+      setCashOutAmount('')
+      setCashOutReference('')
+
+      toast.success('Cash Out successfully')
+    } catch (error: any) {
+      toast.error(error?.data?.message || 'Something went wrong')
+    }
   }
 
   return (
@@ -41,7 +71,7 @@ const AgentDashboard: React.FC = () => {
             <CardTitle>Wallet Balance</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-green-600">৳ {}</p>
+            <p className="text-2xl font-bold text-green-600">৳ {wallet?.data?.balance}</p>
           </CardContent>
         </Card>
 
@@ -57,7 +87,7 @@ const AgentDashboard: React.FC = () => {
             <TabsContent value="cashin">
               <Card className="shadow-md">
                 <CardHeader>
-                  <CardTitle>Cash In for User</CardTitle>
+                  <CardTitle>Cash In to User</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <Input
@@ -76,8 +106,12 @@ const AgentDashboard: React.FC = () => {
                     onChange={(e) => setCashInReference(e.target.value)}
                     placeholder="Reference"
                   />
-                  <Button className="w-full" type="submit">
-                    Confirm Cash In
+                  <Button
+                    className="w-full"
+                    type="submit"
+                    disabled={cashInLoading}
+                  >
+                    {cashInLoading ? 'Processing ...' : 'Confirm Cash In'}
                   </Button>
                 </CardContent>
               </Card>
@@ -89,7 +123,7 @@ const AgentDashboard: React.FC = () => {
             <TabsContent value="cashout">
               <Card className="shadow-md">
                 <CardHeader>
-                  <CardTitle>Cash Out Request</CardTitle>
+                  <CardTitle>Cash Out from User</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <Input
@@ -108,8 +142,12 @@ const AgentDashboard: React.FC = () => {
                     onChange={(e) => setCashOutReference(e.target.value)}
                     placeholder="Reference"
                   />
-                  <Button className="w-full" type="submit">
-                    Confirm Cash Out
+                  <Button
+                    className="w-full"
+                    type="submit"
+                    disabled={cashOutLoading}
+                  >
+                    {cashOutLoading ? 'Processing ...' : 'Confirm Cash Out'}
                   </Button>
                 </CardContent>
               </Card>
