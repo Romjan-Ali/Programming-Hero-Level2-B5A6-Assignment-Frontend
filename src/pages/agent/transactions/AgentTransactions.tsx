@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/select'
 
 import { useGetTransactionsQuery } from '@/redux/features/agent/agent.api'
+import { format } from 'date-fns'
 
 const AgentTransactions: React.FC = () => {
   const [filter, setFilter] = useState<string>('all')
@@ -85,7 +86,9 @@ const AgentTransactions: React.FC = () => {
                       >
                         {txn.status}
                       </TableCell>
-                      <TableCell>{txn.createdAt}</TableCell>
+                      <TableCell>
+                        {format(new Date(txn.createdAt), 'MM/dd/yyyy')}
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : (

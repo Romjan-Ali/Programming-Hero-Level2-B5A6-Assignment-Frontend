@@ -6,7 +6,6 @@ export const agentApi = baseApi.injectEndpoints({
       query: () => ({ url: "/transaction/my-history", method: "GET" }),
       providesTags: ["Transactions"],
     }),
-
     cashIn: builder.mutation({
       query: (body) => ({
         url: "/wallet/cash-in",
