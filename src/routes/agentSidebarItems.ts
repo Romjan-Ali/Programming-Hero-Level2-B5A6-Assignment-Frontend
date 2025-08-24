@@ -1,7 +1,7 @@
 import CashIn from '@/pages/agent/cash_in/CashIn'
 import CashOut from '@/pages/agent/cash_out/CashOut'
 import AgentDashboard from '@/pages/agent/dashboard/AgentDashboard'
-import AgentTransactions from '@/pages/agent/transactions/AgentTransaction'
+import AgentTransactions from '@/pages/agent/transactions/AgentTransactions'
 
 export const agentSidebarItems = [
   {

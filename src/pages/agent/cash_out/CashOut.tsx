@@ -1,82 +1,93 @@
 import React, { useState } from 'react'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { toast } from 'sonner'
+
+import { useCashOutMutation } from '@/redux/features/agent/agent.api'
 
 const CashOut: React.FC = () => {
-  const [formData, setFormData] = useState({
-    userId: '',
-    amount: '',
-  })
+  const [userId, setUserId] = useState('')
+  const [amount, setAmount] = useState('')
+  const [reference, setReference] = useState('')
 
-  const [message, setMessage] = useState<string | null>(null)
+  const [cashOut, { isLoading }] = useCashOutMutation()
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Simulate API call
-    if (formData.userId && parseFloat(formData.amount) > 0) {
-      setMessage(
-        `Successfully processed Cash Out of ৳${formData.amount} for User ID: ${formData.userId}`
-      )
-      setFormData({ userId: '', amount: '' })
+    if (userId && parseFloat(amount) > 0) {
+      try {
+        await cashOut({
+          toUserId: userId,
+          amount: Number(amount),
+          reference,
+        }).unwrap()
+        setAmount('')
+        setReference('')
+        toast.success('Cash out successfully')
+      } catch (error: any) {
+        toast.error(error?.data?.message || 'Something went wrong!')
+      }
     } else {
-      setMessage('Please provide valid User ID and Amount.')
+      toast.error('Please provide a valid User ID and Amount.')
     }
   }
 
   return (
-    <div className="p-6 bg-white rounded-2xl shadow-md max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">
-        Cash Out (Agent)
-      </h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* User ID */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            User ID
-          </label>
-          <input
-            type="text"
-            name="userId"
-            value={formData.userId}
-            onChange={handleChange}
-            placeholder="Enter User ID"
-            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
-          />
-        </div>
+    <div className="flex justify-center items-center p-4">
+      <Card className="w-full max-w-md shadow-lg">
+        <CardHeader>
+          <CardTitle className="text-center">Cash Out from User</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* User ID */}
+            <div className="space-y-2">
+              <Label htmlFor="userId">User ID</Label>
+              <Input
+                id="userId"
+                name="userId"
+                value={userId}
+                onChange={(e) => setUserId(e.target.value)}
+                placeholder="Enter User ID"
+              />
+            </div>
 
-        {/* Amount */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Amount (৳)
-          </label>
-          <input
-            type="number"
-            name="amount"
-            value={formData.amount}
-            onChange={handleChange}
-            placeholder="Enter amount"
-            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
-          />
-        </div>
+            {/* Amount */}
+            <div className="space-y-2">
+              <Label htmlFor="amount">Amount (৳)</Label>
+              <Input
+                id="amount"
+                name="amount"
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                min={10}
+                placeholder="Enter Amount"
+              />
+            </div>
 
-        {/* Submit */}
-        <button
-          type="submit"
-          className="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg shadow-md transition"
-        >
-          Process Cash Out
-        </button>
-      </form>
+            {/* Reference */}
+            <div className="space-y-2">
+              <Label htmlFor="reference">Reference</Label>
+              <Input
+                id="reference"
+                name="reference"
+                value={reference}
+                onChange={(e) => setReference(e.target.value)}
+                placeholder="Reference"
+              />
+            </div>
 
-      {/* Message */}
-      {message && (
-        <p className="mt-4 text-center text-sm font-medium text-gray-700">
-          {message}
-        </p>
-      )}
+            {/* Submit */}
+            <Button type="submit" disabled={isLoading} className="w-full">
+              {isLoading ? 'Processing ...' : 'Process Cash Out'}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   )
 }

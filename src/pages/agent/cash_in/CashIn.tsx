@@ -1,73 +1,86 @@
 import React, { useState } from 'react'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { toast } from 'sonner'
+
+import { useCashInMutation } from '@/redux/features/agent/agent.api'
 
 const CashIn: React.FC = () => {
   const [userId, setUserId] = useState('')
   const [amount, setAmount] = useState('')
-  const [message, setMessage] = useState('')
+  const [reference, setReference] = useState('')
+
+  const [cashIn, { isLoading }] = useCashInMutation()
 
   const handleCashIn = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!userId || !amount) {
-      setMessage('⚠ Please provide User ID and Amount')
+      toast.error('Please provide User ID and Amount')
       return
     }
 
     try {
-      // Example API call
-      const res = await fetch('/api/agent/cash-in', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, amount: parseFloat(amount) }),
-      })
-
-      if (res.ok) {
-        setMessage('✅ Cash-In successful!')
-        setUserId('')
-        setAmount('')
-      } else {
-        const data = await res.json()
-        setMessage(`❌ Failed: ${data.message}`)
-      }
-    } catch (error) {
-      setMessage('❌ Something went wrong!')
+      await cashIn({
+        toUserId: userId,
+        amount: Number(amount),
+        reference,
+      }).unwrap()
+      setAmount('')
+      setReference('')
+      toast.success('Cash in successfully')
+    } catch (error: any) {
+      toast.error(error?.data?.message || 'Server connection failed!')
     }
   }
 
   return (
-    <div className="p-6 bg-white rounded-2xl shadow-md w-full max-w-md">
-      <h2 className="text-2xl font-bold mb-4 text-center">Agent Cash-In</h2>
-      <form onSubmit={handleCashIn} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium">User ID</label>
-          <input
-            type="text"
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-            className="w-full p-2 border rounded-lg"
-            placeholder="Enter User ID"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Amount</label>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="w-full p-2 border rounded-lg"
-            placeholder="Enter Amount"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition"
-        >
-          Confirm Cash-In
-        </button>
-      </form>
-      {message && (
-        <p className="mt-4 text-center text-sm font-medium">{message}</p>
-      )}
+    <div className="flex justify-center items-center p-4">
+      <Card className="w-full max-w-md shadow-lg">
+        <CardHeader>
+          <CardTitle className="text-center">Cash In to User</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleCashIn} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="userId">User ID</Label>
+              <Input
+                id="userId"
+                type="text"
+                value={userId}
+                onChange={(e) => setUserId(e.target.value)}
+                placeholder="Enter User ID"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="amount">Amount</Label>
+              <Input
+                id="amount"
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                min={10}
+                placeholder="Enter Amount"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="reference">Reference</Label>
+              <Input
+                id="reference"
+                type="text"
+                value={reference}
+                onChange={(e) => setReference(e.target.value)}
+                placeholder="Reference"
+              />
+            </div>
+            <Button type="submit" disabled={isLoading} className="w-full">
+              {isLoading? "Processing ..." : "Process Cash In"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   )
 }

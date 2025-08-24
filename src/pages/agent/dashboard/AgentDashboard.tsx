@@ -7,7 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 const AgentDashboard: React.FC = () => {
   return (
     <div className="p-6 flex justify-center">
-      <div className="w-full max-w-2xl space-y-6"> {/* ✅ Center + Limit Width */}
+      <div className="w-full max-w-2xl space-y-6">
         {/* Wallet Balance */}
         <Card className="shadow-md">
           <CardHeader>
@@ -86,7 +86,7 @@ const AgentDashboard: React.FC = () => {
               ))}
             </div>
           </CardContent>
-        </Card>
+        </Card>        
       </div>
     </div>
   )
