@@ -37,7 +37,7 @@ export const userApi = baseApi.injectEndpoints({
     }),
     deposit: builder.mutation({
       query: (body) => ({
-        url: '/wallet/top-up',
+        url: '/wallet/cash-in',
         method: 'POST',
         data: body,
       }),
@@ -45,7 +45,7 @@ export const userApi = baseApi.injectEndpoints({
     }),
     withdraw: builder.mutation({
       query: (body) => ({
-        url: '/transaction/withdraw',
+        url: '/wallet/withdraw',
         method: 'POST',
         data: body,
       }),
@@ -53,7 +53,7 @@ export const userApi = baseApi.injectEndpoints({
     }),
     sendMoney: builder.mutation({
       query: (body) => ({
-        url: '/transaction/send-money',
+        url: '/wallet/send-money',
         method: 'POST',
         data: body,
       }),

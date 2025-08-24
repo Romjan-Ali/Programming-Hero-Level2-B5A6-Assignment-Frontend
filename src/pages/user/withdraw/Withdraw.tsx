@@ -3,10 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
+import { useWithdrawMutation } from '@/redux/features/user/user.api'
 
 const Withdraw = () => {
   const [amount, setAmount] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const [withdraw] = useWithdrawMutation()
 
   const handleWithdraw = async () => {
     if (!amount || Number(amount) <= 0) {
@@ -16,9 +19,7 @@ const Withdraw = () => {
 
     setLoading(true)
     try {
-      // 🔹 API call for withdrawal
-      await new Promise((resolve) => setTimeout(resolve, 1000)) // mock delay
-
+      await withdraw({ amount: Number(amount) }).unwrap()
       toast.success(`Successfully withdrawn ৳${amount}`)
       setAmount('')
     } catch (error) {
@@ -39,6 +40,7 @@ const Withdraw = () => {
           placeholder="Enter amount"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
+          min={10}
         />
         <Button className="w-full" onClick={handleWithdraw} disabled={loading}>
           {loading ? 'Processing...' : 'Withdraw'}

@@ -1,34 +1,47 @@
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { toast } from "sonner"
+import { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
+
+import { useSendMoneyMutation } from '@/redux/features/user/user.api'
 
 const SendMoney = () => {
-  const [recipient, setRecipient] = useState("")
-  const [amount, setAmount] = useState("")
+  const [recipient, setRecipient] = useState('')
+  const [amount, setAmount] = useState('')
+  const [reference, setReference] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const [sendMoney] = useSendMoneyMutation()
 
   const handleSend = async () => {
     if (!recipient.trim()) {
-      toast.error("Please enter recipient email or phone")
+      toast.error('Please enter recipient email or phone')
       return
     }
     if (!amount || Number(amount) <= 0) {
-      toast.error("Please enter a valid amount")
+      toast.error('Please enter a valid amount')
       return
     }
 
     setLoading(true)
     try {
-      // 🔹 Replace this with real API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      console.log({
+        recipient,
+        amount: Number(amount),
+        reference,
+      })
+      await sendMoney({
+        toUserId: recipient,
+        amount: Number(amount),
+        reference,
+      }).unwrap()
 
       toast.success(`Successfully sent ৳${amount} to ${recipient}`)
-      setRecipient("")
-      setAmount("")
+      setRecipient('')
+      setAmount('')
     } catch (error) {
-      toast.error("Transaction failed. Try again.")
+      toast.error('Transaction failed. Try again.')
     } finally {
       setLoading(false)
     }
@@ -52,12 +65,14 @@ const SendMoney = () => {
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />
-        <Button
-          className="w-full"
-          onClick={handleSend}
-          disabled={loading}
-        >
-          {loading ? "Processing..." : "Send Money"}
+        <Input
+          type="text"
+          placeholder="Reference"
+          value={reference}
+          onChange={(e) => setReference(e.target.value)}
+        />
+        <Button className="w-full" onClick={handleSend} disabled={loading}>
+          {loading ? 'Processing...' : 'Send Money'}
         </Button>
       </CardContent>
     </Card>
