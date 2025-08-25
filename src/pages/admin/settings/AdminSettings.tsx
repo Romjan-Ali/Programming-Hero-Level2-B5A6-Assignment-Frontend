@@ -1,4 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
+import { Button } from "@/components/ui/button"
 
 const AdminSettings: React.FC = () => {
   const [transactionLimit, setTransactionLimit] = useState(50000)
@@ -7,7 +12,7 @@ const AdminSettings: React.FC = () => {
 
   const handleSave = () => {
     // TODO: Call API to update admin settings
-    console.log('Saving settings:', {
+    console.log("Saving settings:", {
       transactionLimit,
       commissionRate,
       isFeatureXEnabled,
@@ -15,55 +20,54 @@ const AdminSettings: React.FC = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-6">
-      <h2 className="text-2xl font-bold mb-6">Admin Settings</h2>
+    <Card className="max-w-4xl mx-auto shadow-lg p-6">
+      <CardHeader>
+        <CardTitle>Admin Settings</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Transaction Limit */}
+        <div className="space-y-2">
+          <Label htmlFor="transactionLimit">
+            Daily Transaction Limit (৳)
+          </Label>
+          <Input
+            id="transactionLimit"
+            type="number"
+            value={transactionLimit}
+            onChange={(e) => setTransactionLimit(Number(e.target.value))}
+            className="w-full p-3" // Make input wider
+          />
+        </div>
 
-      {/* Transaction Limit */}
-      <div className="mb-5">
-        <label className="block text-sm font-medium mb-2">
-          Daily Transaction Limit (৳)
-        </label>
-        <input
-          type="number"
-          value={transactionLimit}
-          onChange={(e) => setTransactionLimit(Number(e.target.value))}
-          className="w-full border rounded-lg px-4 py-2 focus:ring focus:ring-blue-300"
-        />
-      </div>
+        {/* Commission Rate */}
+        <div className="space-y-2">
+          <Label htmlFor="commissionRate">Commission Rate (%)</Label>
+          <Input
+            id="commissionRate"
+            type="number"
+            step="0.1"
+            value={commissionRate}
+            onChange={(e) => setCommissionRate(Number(e.target.value))}
+            className="w-full p-3" // Make input wider
+          />
+        </div>
 
-      {/* Commission Rate */}
-      <div className="mb-5">
-        <label className="block text-sm font-medium mb-2">
-          Commission Rate (%)
-        </label>
-        <input
-          type="number"
-          value={commissionRate}
-          onChange={(e) => setCommissionRate(Number(e.target.value))}
-          step="0.1"
-          className="w-full border rounded-lg px-4 py-2 focus:ring focus:ring-blue-300"
-        />
-      </div>
+        {/* Enable/Disable Features */}
+        <div className="flex items-center justify-between">
+          <Label htmlFor="featureX">Enable Feature X</Label>
+          <Switch
+            id="featureX"
+            checked={isFeatureXEnabled}
+            onCheckedChange={setIsFeatureXEnabled}
+          />
+        </div>
 
-      {/* Enable/Disable Features */}
-      <div className="mb-5 flex items-center gap-3">
-        <input
-          type="checkbox"
-          checked={isFeatureXEnabled}
-          onChange={(e) => setIsFeatureXEnabled(e.target.checked)}
-          className="w-5 h-5"
-        />
-        <label className="text-sm font-medium">Enable Feature X</label>
-      </div>
-
-      {/* Save Button */}
-      <button
-        onClick={handleSave}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg"
-      >
-        Save Settings
-      </button>
-    </div>
+        {/* Save Button */}
+        <Button onClick={handleSave} className="w-full py-3">
+          Save Settings
+        </Button>
+      </CardContent>
+    </Card>
   )
 }
 

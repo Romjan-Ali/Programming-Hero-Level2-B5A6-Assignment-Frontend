@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import React, { useEffect, useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select"
 
 type Transaction = {
   id: string
   user: string
-  type: 'deposit' | 'withdraw' | 'send'
+  type: "deposit" | "withdraw" | "send"
   amount: number
   date: string
 }
@@ -21,13 +21,13 @@ type Transaction = {
 const AdminTransactions: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [filtered, setFiltered] = useState<Transaction[]>([])
-  const [typeFilter, setTypeFilter] = useState<string>('')
-  const [searchUser, setSearchUser] = useState<string>('')
+  const [typeFilter, setTypeFilter] = useState<string>("")
+  const [searchUser, setSearchUser] = useState<string>("")
 
   useEffect(() => {
     // Fetch all transactions (admin can see all users' data)
     const fetchData = async () => {
-      const res = await fetch('/api/admin/transactions')
+      const res = await fetch("/api/admin/transactions")
       const data = await res.json()
       setTransactions(data)
       setFiltered(data)
@@ -80,8 +80,8 @@ const AdminTransactions: React.FC = () => {
           <Button
             variant="outline"
             onClick={() => {
-              setSearchUser('')
-              setTypeFilter('')
+              setSearchUser("")
+              setTypeFilter("")
             }}
           >
             Reset
@@ -90,9 +90,9 @@ const AdminTransactions: React.FC = () => {
 
         {/* Transactions Table */}
         <div className="overflow-x-auto">
-          <table className="min-w-full border border-gray-200">
+          <table className="min-w-full border">
             <thead>
-              <tr className="bg-gray-100 text-left">
+              <tr className="bg-muted text-left">
                 <th className="p-2 border">ID</th>
                 <th className="p-2 border">User</th>
                 <th className="p-2 border">Type</th>
@@ -103,7 +103,7 @@ const AdminTransactions: React.FC = () => {
             <tbody>
               {filtered.length > 0 ? (
                 filtered.map((tx) => (
-                  <tr key={tx.id} className="hover:bg-gray-50">
+                  <tr key={tx.id} className="hover:bg-accent">
                     <td className="p-2 border">{tx.id}</td>
                     <td className="p-2 border">{tx.user}</td>
                     <td className="p-2 border capitalize">{tx.type}</td>
@@ -115,7 +115,7 @@ const AdminTransactions: React.FC = () => {
                 ))
               ) : (
                 <tr>
-                  <td className="p-2 border text-center" colSpan={5}>
+                  <td className="p-2 border text-center text-muted-foreground" colSpan={5}>
                     No transactions found
                   </td>
                 </tr>
