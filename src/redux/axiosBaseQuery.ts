@@ -3,7 +3,7 @@ import { axiosInstance } from '@/lib/axios'
 import type { AxiosRequestConfig, AxiosError } from 'axios'
 
 const axiosBaseQuery =
-  (  ): BaseQueryFn<
+  (): BaseQueryFn<
     {
       url: string
       method?: AxiosRequestConfig['method']
@@ -22,6 +22,7 @@ const axiosBaseQuery =
         data,
         params,
         headers,
+        withCredentials: true,
       })
       return { data: result.data }
     } catch (axiosError) {
