@@ -70,7 +70,7 @@ const UserDashboard: React.FC = () => {
           <ul className="divide-y">
             {transactions?.data?.slice(0, 5).map((tx: any) => (
               <li key={tx._id} className="py-2 flex justify-between">
-                <span>{tx.type.toUpperCase()}</span>
+                <span>{tx.type}</span>
                 <span>৳ {tx.amount}</span>
                 <span className="text-sm text-gray-500">
                   {new Date(tx.createdAt).toLocaleDateString()}

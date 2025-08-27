@@ -12,7 +12,7 @@ export const adminApi = baseApi.injectEndpoints({
       providesTags: ['User', 'Agent', 'Admin'],
     }),
 
-    // Fetch users using query
+    // Fetch wallets using query
     getWallets: builder.query({
       query: (filter) => ({
         url: '/admin/wallets',

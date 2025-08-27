@@ -1,4 +1,4 @@
-import { useId, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { useRegisterMutation } from '@/redux/features/auth/auth.api'
 
 import { z } from 'zod'
@@ -19,6 +19,11 @@ import { toast } from 'sonner'
 import { useNavigate } from 'react-router'
 import Dropdown from './Dropdown'
 import { LoaderCircle } from 'lucide-react'
+
+import { useSelector, useDispatch } from 'react-redux'
+import { type RootState } from '@/redux/store'
+import { closeModal, openModal } from '@/redux/features/modal/modalSlice'
+import WallexLogo from '@/assets/wallex-logo'
 
 const registerSchema = z.object({
   name: z
@@ -52,10 +57,17 @@ const Signup = () => {
 
   const [register, { isLoading }] = useRegisterMutation()
 
+  const isModalOpen = useSelector((state: RootState) => state.modal.isModalOpen) // Redux state
+  const dispatch = useDispatch()
+
   const handleChangeInputData = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name
     const value = e.target.value
     setInputData((values) => ({ ...values, [name]: value }))
+  }
+
+  const handleOpenChange = () => {
+    dispatch(closeModal())
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -81,30 +93,22 @@ const Signup = () => {
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
+    <Dialog open={isModalOpen} onOpenChange={handleOpenChange}>
+      {/*       <DialogTrigger asChild>
         <Button variant="outline">Sign up</Button>
-      </DialogTrigger>
+      </DialogTrigger> */}
+
       <DialogContent>
         <div className="flex flex-col items-center gap-2">
           <div
-            className="flex size-11 shrink-0 items-center justify-center rounded-full border"
+            className="flex shrink-0 items-center justify-center mb-2"
             aria-hidden="true"
           >
-            <svg
-              className="stroke-zinc-800 dark:stroke-zinc-100"
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 32 32"
-              aria-hidden="true"
-            >
-              <circle cx="16" cy="16" r="12" fill="none" strokeWidth="8" />
-            </svg>
+            <WallexLogo />
           </div>
           <DialogHeader>
             <DialogTitle className="sm:text-center">
-              Sign up Origin UI
+              Sign up
             </DialogTitle>
             <DialogDescription className="sm:text-center">
               We just need a few details to get you started.

@@ -10,17 +10,17 @@ import Verify from '@/pages/verify/Verify'
 import { generateRoutes } from '@/utils/generateRoutes'
 import { withAuth } from '@/utils/withAuth'
 import { createBrowserRouter, Navigate } from 'react-router'
-import { adminSidebarItems } from './adminSidebarItems'
 import type { TRole } from '@/types'
-import { userSidebarItems } from './userSidebarItems'
 import AdminDashboard from '@/pages/admin/dashboard/AdminDashboard'
 import AgentDashboard from '@/pages/agent/dashboard/AgentDashboard'
 import UserDashboard from '@/pages/user/dashboard/UserDashboard'
+import { adminSidebarItems } from './adminSidebarItems'
 import { agentSidebarItems } from './agentSidebarItems'
+import { userSidebarItems } from './userSidebarItems'
 
 export const router = createBrowserRouter([
   {
-    Component: App,
+    Component: withAuth(App),
     path: '/',
     children: [
       {
@@ -46,6 +46,10 @@ export const router = createBrowserRouter([
       {
         Component: Verify,
         path: '/verify',
+      },
+      {
+        path: '*',
+        element: <Navigate to="/" />,
       },
     ],
   },

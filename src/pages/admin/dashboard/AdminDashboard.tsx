@@ -2,17 +2,22 @@ import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Users, Wallet, ArrowUpRight, ArrowDownRight } from 'lucide-react'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 import { useGetUsersQuery } from '@/redux/features/admin/admin.api'
 import { useGetWalletsQuery } from '@/redux/features/admin/admin.api'
-import { useGetTransactionsQuery } from '@/redux/features/admin/admin.api' 
+import { useGetTransactionsQuery } from '@/redux/features/admin/admin.api'
 
 const AdminDashboard: React.FC = () => {
   const { data: users } = useGetUsersQuery({ role: 'USER' })
   const { data: agents } = useGetUsersQuery({ role: 'AGENT' })
   const { data: admins } = useGetUsersQuery({ role: 'ADMIN' })
   const { data: wallets } = useGetWalletsQuery('')
-  const { data: transactions } = useGetTransactionsQuery('')
+  const { data: transactions } = useGetTransactionsQuery({limit: '20'})
 
   console.log({ users, agents, admins, wallets, transactions })
 
@@ -27,7 +32,9 @@ const AdminDashboard: React.FC = () => {
           <CardContent className="flex items-center justify-between p-6">
             <div>
               <p className="text-muted-foreground text-sm">Total Users</p>
-              <h2 className="text-xl font-semibold">{users?.meta?.total}</h2>
+              <h2 className="text-xl font-semibold">
+                {users?.meta?.total ? users?.meta?.total : '-'}
+              </h2>
             </div>
             <Users className="w-10 h-10 text-blue-500" />
           </CardContent>
@@ -37,7 +44,9 @@ const AdminDashboard: React.FC = () => {
           <CardContent className="flex items-center justify-between p-6">
             <div>
               <p className="text-muted-foreground text-sm">Total Agents</p>
-              <h2 className="text-xl font-semibold">{agents?.meta?.total}</h2>
+              <h2 className="text-xl font-semibold">
+                {agents?.meta?.total ? agents?.meta?.total : '-'}
+              </h2>
             </div>
             <Users className="w-10 h-10 text-green-500" />
           </CardContent>
@@ -47,7 +56,9 @@ const AdminDashboard: React.FC = () => {
           <CardContent className="flex items-center justify-between p-6">
             <div>
               <p className="text-muted-foreground text-sm">Transactions</p>
-              <h2 className="text-xl font-semibold">{transactions?.meta?.total}</h2>
+              <h2 className="text-xl font-semibold">
+                {transactions?.meta?.total ? transactions?.meta?.total : '-'}
+              </h2>
             </div>
             <ArrowUpRight className="w-10 h-10 text-purple-500" />
           </CardContent>
@@ -57,7 +68,11 @@ const AdminDashboard: React.FC = () => {
           <CardContent className="flex items-center justify-between p-6">
             <div>
               <p className="text-muted-foreground text-sm">System Balance</p>
-              <h2 className="text-xl font-semibold">{wallets?.meta?.totalBalance}</h2>
+              <h2 className="text-xl font-semibold">
+                {wallets?.meta?.totalBalance
+                  ? wallets?.meta?.totalBalance
+                  : '-'}
+              </h2>
             </div>
             <Wallet className="w-10 h-10 text-orange-500" />
           </CardContent>
@@ -119,24 +134,46 @@ const AdminDashboard: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b">
-                  <td className="p-2">TX-1001</td>
-                  <td className="p-2">John Doe</td>
-                  <td className="p-2 flex items-center gap-1 text-green-600">
-                    <ArrowUpRight size={16} /> Deposit
-                  </td>
-                  <td className="p-2">$500</td>
-                  <td className="p-2 text-green-600">Completed</td>
-                </tr>
-                <tr>
-                  <td className="p-2">TX-1002</td>
-                  <td className="p-2">Jane Smith</td>
-                  <td className="p-2 flex items-center gap-1 text-yellow-600">
-                    <ArrowDownRight size={16} /> Withdraw
-                  </td>
-                  <td className="p-2">$200</td>
-                  <td className="p-2 text-yellow-600">Pending</td>
-                </tr>
+                {transactions?.data?.map((transaction: any) => (
+                  <tr key={transaction._id} className="border-b">
+                    <td className="p-2">
+                      <Tooltip>
+                        <TooltipTrigger>
+                          {'...' + transaction?._id?.slice(-5)}
+                        </TooltipTrigger>
+                        <TooltipContent>{transaction?._id}</TooltipContent>
+                      </Tooltip>
+                    </td>
+                    <td className="p-2">
+                      <Tooltip>
+                        <TooltipTrigger>
+                          {transaction?.from?.name
+                            ? transaction?.from?.name
+                            : '-'}
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <div>
+                            From:{' '}
+                            {transaction?.from?.name
+                              ? transaction?.from?.name
+                              : '-'}
+                          </div>
+                          <div>
+                            To:{' '}
+                            {transaction?.from?.name
+                              ? transaction?.to?.name
+                              : '-'}
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    </td>
+                    <td className="p-2 flex items-center gap-1">
+                      {transaction?.type}
+                    </td>
+                    <td className="p-2">৳ {transaction?.amount}</td>
+                    <td className="p-2">{transaction?.status}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </CardContent>

@@ -16,10 +16,16 @@ import { useLoginMutation } from '@/redux/features/auth/auth.api'
 import { toast } from 'sonner'
 import { useNavigate } from 'react-router'
 import { LoaderCircle } from 'lucide-react'
+import WallexLogo from '@/assets/wallex-logo'
+
+import { useDispatch } from 'react-redux'
+import { openModal } from '@/redux/features/modal/modalSlice'
 
 export default function Signin() {
   const id = useId()
   const navigate = useNavigate()
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const [inputData, setInputData] = useState<{
     email: string
@@ -28,6 +34,13 @@ export default function Signin() {
     email: 'admin@gmail.com',
     password: 'admin_50@/50',
   })
+
+  const dispatch = useDispatch()
+
+  const handleRegisterClick = () => {
+    setIsModalOpen(false)
+    dispatch(openModal())
+  }
 
   const [login, { isLoading }] = useLoginMutation()
 
@@ -69,26 +82,17 @@ export default function Signin() {
   }
 
   return (
-    <Dialog>
+    <Dialog open={isModalOpen} onOpenChange={setIsModalOpen} >
       <DialogTrigger asChild>
         <Button variant="outline">Sign in</Button>
       </DialogTrigger>
       <DialogContent>
         <div className="flex flex-col items-center gap-2">
           <div
-            className="flex size-11 shrink-0 items-center justify-center rounded-full border"
+            className="flex shrink-0 items-center justify-center mb-2"
             aria-hidden="true"
           >
-            <svg
-              className="stroke-zinc-800 dark:stroke-zinc-100"
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 32 32"
-              aria-hidden="true"
-            >
-              <circle cx="16" cy="16" r="12" fill="none" strokeWidth="8" />
-            </svg>
+            <WallexLogo />
           </div>
           <DialogHeader>
             <DialogTitle className="sm:text-center">Welcome back</DialogTitle>
@@ -138,6 +142,14 @@ export default function Signin() {
             <a className="text-sm underline hover:no-underline" href="#">
               Forgot password?
             </a>
+          </div>
+          <div className="text-center">
+            Have not any account?{' '}
+            <button onClick={handleRegisterClick}>
+              <a className="text-sm underline hover:no-underline" href="#">
+                Register now
+              </a>
+            </button>
           </div>
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? <LoaderCircle className="animate-spin" /> : 'Sign in'}

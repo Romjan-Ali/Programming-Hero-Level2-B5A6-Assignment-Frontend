@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { useGetUsersQuery } from '@/redux/features/admin/admin.api'
 
 interface User {
   _id: string
@@ -21,49 +22,9 @@ interface User {
 }
 
 const ManageUsers: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([])
   const [search, setSearch] = useState('')
 
-  useEffect(() => {
-    // Simulated API call (replace with real fetch)
-    setUsers([
-      {
-        _id: '1',
-        name: 'John Doe',
-        email: 'john@example.com',
-        phone: '1234567890',
-        role: 'user',
-        balance: 500,
-      },
-      {
-        _id: '2',
-        name: 'Jane Smith',
-        email: 'jane@example.com',
-        phone: '0987654321',
-        role: 'agent',
-        balance: 2000,
-      },
-      {
-        _id: '3',
-        name: 'Admin',
-        email: 'admin@example.com',
-        phone: '1111111111',
-        role: 'admin',
-        balance: 10000,
-      },
-    ])
-  }, [])
-
-  const handleDelete = (id: string) => {
-    setUsers(users.filter((u) => u._id !== id))
-  }
-
-  const filteredUsers = users.filter(
-    (u) =>
-      u.name.toLowerCase().includes(search.toLowerCase()) ||
-      u.email.toLowerCase().includes(search.toLowerCase()) ||
-      u.phone.includes(search)
-  )
+  const { data: users } = useGetUsersQuery()
 
   return (
     <Card className="w-full p-4 shadow-lg rounded-2xl">
@@ -84,18 +45,16 @@ const ManageUsers: React.FC = () => {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Phone</TableHead>
               <TableHead>Role</TableHead>
               <TableHead>Balance</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredUsers.map((user) => (
+            {users?.data?.map((user) => (
               <TableRow key={user._id}>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.phone}</TableCell>
                 <TableCell>{user.role}</TableCell>
                 <TableCell>${user.balance}</TableCell>
                 <TableCell className="text-right space-x-2">
