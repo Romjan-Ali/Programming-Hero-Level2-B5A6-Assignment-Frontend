@@ -21,7 +21,7 @@ import { LoaderCircle } from 'lucide-react'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { type RootState } from '@/redux/store'
-import { closeModal, openModal } from '@/redux/features/modal/modalSlice'
+import { closeModal } from '@/redux/features/modal/modalSlice'
 import WallexLogo from '@/assets/wallex-logo'
 
 const registerSchema = z.object({
@@ -80,6 +80,7 @@ const Signup = () => {
       navigate('/verify', {
         state: { email: inputData.email, name: inputData.name },
       })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(error)
       if (error.data?.stack && error.data?.stack.includes('ZodError')) {
