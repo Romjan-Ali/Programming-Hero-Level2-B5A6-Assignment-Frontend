@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState} from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -25,9 +24,9 @@ const AdminSettings: React.FC = () => {
   const [role, setRole] = useState(sampleAdminData.role)
   const [isActive, setIsActive] = useState(sampleAdminData.isActive === 'ACTIVE')
   const [isVerified, setIsVerified] = useState(sampleAdminData.isVerified)
-  const [transactionLimit, setTransactionLimit] = useState(sampleAdminData.transactionLimit)
-  const [commissionRate, setCommissionRate] = useState(sampleAdminData.commissionRate)
-  const [isFeatureXEnabled, setIsFeatureXEnabled] = useState(sampleAdminData.isFeatureXEnabled)
+  // const [transactionLimit, setTransactionLimit] = useState(sampleAdminData.transactionLimit)
+  // const [commissionRate, setCommissionRate] = useState(sampleAdminData.commissionRate)
+  // const [isFeatureXEnabled, setIsFeatureXEnabled] = useState(sampleAdminData.isFeatureXEnabled)
 
   const handleSave = () => {
     const updatedSettings = {
@@ -36,9 +35,9 @@ const AdminSettings: React.FC = () => {
       role,
       isActive: isActive ? 'ACTIVE' : 'INACTIVE',
       isVerified,
-      transactionLimit,
-      commissionRate,
-      isFeatureXEnabled,
+      // transactionLimit,
+      // commissionRate,
+      // isFeatureXEnabled,
     }
 
     // Log the updated settings to console (You can replace this with an API call to save data)
