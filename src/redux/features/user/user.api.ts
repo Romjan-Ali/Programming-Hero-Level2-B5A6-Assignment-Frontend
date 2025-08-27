@@ -11,6 +11,16 @@ export const userApi = baseApi.injectEndpoints({
       }),
       providesTags: ['User'],
     }),
+
+    softDeleteUser: builder.mutation({
+      query: (userId) => ({
+        url: `/user/${userId}`,
+        method: 'PATCH',
+        data: { isDeleted: true, isActive: "BLOCKED" },
+      }),
+      invalidatesTags: ['User'],
+    }),
+
     updateUser: builder.mutation({
       query: (body) => ({
         url: '/user/update-profile',
@@ -18,7 +28,8 @@ export const userApi = baseApi.injectEndpoints({
         data: body,
       }),
       invalidatesTags: ['User'],
-    }),
+    }), 
+    
 
     // TRANSACTIONS
     getTransactions: builder.query({
@@ -35,6 +46,7 @@ export const userApi = baseApi.injectEndpoints({
       },
       providesTags: ['Transactions'],
     }),
+
     deposit: builder.mutation({
       query: (body) => ({
         url: '/wallet/cash-in',
@@ -43,6 +55,7 @@ export const userApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Transactions', 'User'],
     }),
+
     withdraw: builder.mutation({
       query: (body) => ({
         url: '/wallet/withdraw',
@@ -51,6 +64,7 @@ export const userApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Transactions', 'User'],
     }),
+
     sendMoney: builder.mutation({
       query: (body) => ({
         url: '/wallet/send-money',
@@ -69,4 +83,5 @@ export const {
   useDepositMutation,
   useWithdrawMutation,
   useSendMoneyMutation,
+  useSoftDeleteUserMutation
 } = userApi

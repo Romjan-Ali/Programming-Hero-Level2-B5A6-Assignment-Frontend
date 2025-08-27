@@ -12,6 +12,15 @@ export const adminApi = baseApi.injectEndpoints({
       providesTags: ['User', 'Agent', 'Admin'],
     }),
 
+    deleteUser: builder.mutation({
+      query: (body) => ({
+        url: '/delete-user',
+        method: 'PATCH',
+        data: body,
+      }),
+      invalidatesTags: ['User'],
+    }),
+
     // Fetch wallets using query
     getWallets: builder.query({
       query: (filter) => ({
@@ -69,4 +78,5 @@ export const {
   useApproveRejectTransactionMutation,
   useGetUsersQuery,
   useGetWalletsQuery,
+  useDeleteUserMutation
 } = adminApi

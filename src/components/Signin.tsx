@@ -31,8 +31,8 @@ export default function Signin() {
     email: string
     password: string
   }>({
-    email: 'admin@gmail.com',
-    password: 'admin_50@/50',
+    email: 'bob@example.com',
+    password: 'hashed_@Password_2',
   })
 
   const dispatch = useDispatch()
@@ -64,8 +64,8 @@ export default function Signin() {
       console.log('res', res)
 
       if (res.success) {
-        toast.success('Logged in successfully')
-        navigate('/')
+        toast.success('Sign in successfully')
+        window.location.reload()
       }
     } catch (err: any) {
       console.error(err)
