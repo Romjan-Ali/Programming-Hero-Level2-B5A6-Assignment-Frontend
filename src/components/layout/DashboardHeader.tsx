@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from '@/components/ui/button'
 import { ModeToggle } from '@/components/layout/ModeToggler'
 import { useLogoutMutation } from '@/redux/features/auth/auth.api'
@@ -9,7 +10,7 @@ export default function DashboardHeader() {
 
   const handleClickLogout = async () => {
     try {
-      await logout(undefined)
+      await logout(undefined).unwrap()
       toast.success('Sign out successfully')
     } catch (err: any) {
       toast.error(err?.data?.message || "Something went wrong")
