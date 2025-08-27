@@ -29,7 +29,8 @@ const AgentTransactions: React.FC = () => {
   const filteredTransactions =
     transactions?.data ?? filter === 'all'
       ? transactions?.data
-      : transactions?.data.filter((txn) => txn.type === filter) || []
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      : transactions?.data.filter((txn: any) => txn.type === filter) || []
 
   console.log({ filteredTransactions })
 
@@ -65,7 +66,8 @@ const AgentTransactions: React.FC = () => {
               </TableHeader>
               <TableBody>
                 {filteredTransactions.length > 0 ? (
-                  filteredTransactions.map((txn) => (
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  filteredTransactions.map((txn: any) => (
                     <TableRow key={txn._id}>
                       <TableCell>{txn._id}</TableCell>
                       <TableCell className="capitalize">

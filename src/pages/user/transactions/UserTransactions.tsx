@@ -31,7 +31,8 @@ const UserTransactions = () => {
 
   // Filter transactions
   const filteredTransactions = transactions?.data
-    ? transactions?.data?.filter((t) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ? transactions?.data?.filter((t: any) => {
         const matchType = filterType === 'all' || t.type === filterType
         const matchDate =
           (!dateRange.from || new Date(t.date) >= new Date(dateRange.from)) &&
@@ -114,7 +115,8 @@ const UserTransactions = () => {
                 </td>
               </tr>
             ) : (
-              displayedTransactions.map((t) => (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              displayedTransactions.map((t: any) => (
                 <tr
                   key={t.id}
                   className="border-t border-gray-200 dark:border-gray-700"

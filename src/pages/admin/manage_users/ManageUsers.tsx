@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -28,16 +29,15 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 
-import {
+/* import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from '@/components/ui/dropdown-menu' */
 
 import { useGetUsersQuery } from '@/redux/features/admin/admin.api'
 import { toast } from 'sonner'
@@ -47,28 +47,32 @@ const ManageUsers: React.FC = () => {
   const [search, setSearch] = useState('')
   const [editDialogueOpen, setEditDialogueOpen] = useState(false)
   const [openDialogue, setOpenDialogue] = useState(false)
-  const [deleteId, setDeleteId] = useState(null)
+  const [deleteId, setDeleteId] = useState<string | null>(null)
   const [formData, setFormData] = useState({ name: '', role: '', isActive: '' })
 
-  const [currentUser, setCurrentUser] = useState(null)
+  const [currentUser, setCurrentUser] = useState<any>(null)
+  console.log(currentUser)
 
   const { data: users } = useGetUsersQuery({})
 
   const [softDeleteUser, { isLoading }] = useSoftDeleteUserMutation()
+  console.log(isLoading)
 
   console.log({ users })
 
-  const handleDelete = async (userId) => {
+  const handleDelete = async (userId: string) => {
     try {
       await softDeleteUser(userId).unwrap()
       toast.success('User deleted successfully')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       toast.error(err?.data?.message || 'Something went wrong')
     }
     setDeleteId(null)
   }
 
-  const handleEditOpen = (user) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleEditOpen = (user: any) => {
     setCurrentUser(user)
     setEditDialogueOpen(true)
   }
@@ -76,7 +80,7 @@ const ManageUsers: React.FC = () => {
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
-
+/* 
   const handleRoleSelect = (role: string) => {
     setFormData({ ...formData, role })
   }
@@ -93,7 +97,7 @@ const ManageUsers: React.FC = () => {
     } catch (err: any) {
       toast.error(err?.data?.message || 'Update failed')
     }
-  }
+  } */
 
   return (
     <>
@@ -114,16 +118,6 @@ const ManageUsers: React.FC = () => {
                   id="name"
                   name="name"
                   value={formData.name}
-                  onChange={handleFormChange}
-                />
-              </div>
-              <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  name="username"
-                  value={formData.email}
-                  type="email"
                   onChange={handleFormChange}
                 />
               </div>
@@ -166,7 +160,7 @@ const ManageUsers: React.FC = () => {
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               className="bg-red-500 text-white hover:bg-gray-800"
-              onClick={() => handleDelete(deleteId)}
+              onClick={() => handleDelete(deleteId as string)}
             >
               Delete
             </AlertDialogAction>
@@ -197,7 +191,7 @@ const ManageUsers: React.FC = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users?.data?.map((user) => (
+              {users?.data?.map((user: any) => (
                 <TableRow key={user._id}>
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>

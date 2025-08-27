@@ -21,58 +21,29 @@ import Signin from "../Signin"
 import Signup from "../Signup"
 import { Link } from "react-router"
 
+interface NavigationItem {
+  href: string
+  label: string
+  icon?: "BookOpenIcon" | "InfoIcon" | "LifeBuoyIcon"
+  description?: string
+}
+
+interface NavigationLink {
+  href?: string
+  label: string
+  type?: "icon" | "description"
+  submenu?: boolean
+  items?: NavigationItem[]
+}
+
+
 // Navigation links array to be used in both desktop and mobile menus
-const navigationLinks = [
+const navigationLinks: NavigationLink[] = [
   { href: "/", label: "Home" },
   { href: "features", label: "Features" },
-  // { href: "#", label: "Pricing" },
   { href: "faq", label: "FAQ" },
   { href: "contact", label: "Contact" },
   { href: "about", label: "About" },
-
-  /* {
-    label: "Features",
-    submenu: true,
-    type: "description",
-    items: [
-      {
-        href: "#",
-        label: "Components",
-        description: "Browse all components in the library.",
-      },
-      {
-        href: "#",
-        label: "Documentation",
-        description: "Learn how to use the library.",
-      },
-      {
-        href: "#",
-        label: "Templates",
-        description: "Pre-built layouts for common use cases.",
-      },
-    ],
-  }, */
-  /* {
-    label: "Pages",
-    submenu: true,
-    type: "simple",
-    items: [
-      { href: "#", label: "Page A" },
-      { href: "#", label: "Page B" },
-      { href: "#", label: "Page C" },
-      { href: "#", label: "Page D" },
-    ],
-  }, */
-  /* {
-    label: "About",
-    submenu: true,
-    type: "icon",
-    items: [
-      { href: "#", label: "Getting Started", icon: "BookOpenIcon" },
-      { href: "#", label: "Tutorials", icon: "LifeBuoyIcon" },
-      { href: "#", label: "About Us", icon: "InfoIcon" },
-    ],
-  }, */
 ]
 
 export default function Header() {
@@ -127,7 +98,7 @@ export default function Header() {
                             {link.label}
                           </div>
                           <ul>
-                            {link.items.map((item, itemIndex) => (
+                            {link?.items?.map((item, itemIndex) => (
                               <li key={itemIndex}>
                                 <NavigationMenuLink
                                   href={item.href}
@@ -178,7 +149,7 @@ export default function Header() {
               <NavigationMenuList className="gap-2">
                 {navigationLinks.map((link, index) => (
                   <NavigationMenuItem key={index}>
-                    {link.submenu ? (
+                    {link.submenu && link.items ? (
                       <>
                         <NavigationMenuTrigger className="text-muted-foreground hover:text-primary bg-transparent px-2 py-1.5 font-medium *:[svg]:-me-0.5 *:[svg]:size-3.5">
                           {link.label}

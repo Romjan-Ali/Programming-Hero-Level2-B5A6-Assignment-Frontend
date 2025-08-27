@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Users, Wallet, ArrowUpRight, ArrowDownRight } from 'lucide-react'
+import { Users, Wallet, ArrowUpRight } from 'lucide-react'
 import {
   Tooltip,
   TooltipContent,
@@ -134,6 +135,7 @@ const AdminDashboard: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
+                
                 {transactions?.data?.map((transaction: any) => (
                   <tr key={transaction._id} className="border-b">
                     <td className="p-2">

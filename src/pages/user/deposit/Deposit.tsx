@@ -9,7 +9,6 @@ import { useDepositMutation } from '@/redux/features/user/user.api'
 const Deposit: React.FC = () => {
   const [amount, setAmount] = useState('')
   const [agentId, setAgentId] = useState('')
-  const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
 
   // RTK Query mutation hook
@@ -17,13 +16,13 @@ const Deposit: React.FC = () => {
 
   const handleDeposit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
     setMessage('')
 
     try {
       const result = await deposit({ amount: Number(amount) }).unwrap()
       setMessage(`✅ Successfully deposited ৳${result?.data?.amount || amount}`)
       setAmount('')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setMessage(
         error?.data?.message || '❌ Failed to deposit money. Try again.'
