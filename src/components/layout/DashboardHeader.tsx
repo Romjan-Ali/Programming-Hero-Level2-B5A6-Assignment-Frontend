@@ -4,14 +4,18 @@ import { ModeToggle } from '@/components/layout/ModeToggler'
 import { useLogoutMutation } from '@/redux/features/auth/auth.api'
 import { toast } from 'sonner'
 import { LoaderCircle } from 'lucide-react'
+import { useNavigate } from 'react-router'
 
 export default function DashboardHeader() {
+  const navigate = useNavigate()
   const [logout, { isLoading }] = useLogoutMutation(undefined)
+
 
   const handleClickLogout = async () => {
     try {
       await logout(undefined).unwrap()
       toast.success('Sign out successfully')
+      navigate('/')
     } catch (err: any) {
       toast.error(err?.data?.message || "Something went wrong")
       console.log(err)
