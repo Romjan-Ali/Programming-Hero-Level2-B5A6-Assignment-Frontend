@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -48,8 +48,9 @@ const ManageUsers: React.FC = () => {
   const [editDialogueOpen, setEditDialogueOpen] = useState(false)
   const [openDialogue, setOpenDialogue] = useState(false)
   const [deleteId, setDeleteId] = useState(null)
+  const [formData, setFormData] = useState({ name: '', role: '', isActive: '' })
 
-  const [formData, setFormData] = useState({ name: '', username: '', role: '' })
+  const [currentUser, setCurrentUser] = useState(null)
 
   const { data: users } = useGetUsersQuery({})
 
@@ -67,18 +68,31 @@ const ManageUsers: React.FC = () => {
     setDeleteId(null)
   }
 
-    useEffect(() => {
-    if (currentUser) {
-      setFormData({
-        name: currentUser.name || '',
-        username: currentUser.username || '',
-        role: currentUser.role || '',
-      })
-    }
-  }, [currentUser])
+  const handleEditOpen = (user) => {
+    setCurrentUser(user)
+    setEditDialogueOpen(true)
+  }
 
-  const handleSelect = (value: string) => {
-    alert(`You selected: ${value}`)
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  const handleRoleSelect = (role: string) => {
+    setFormData({ ...formData, role })
+  }
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!currentUser) return
+
+    try {
+      await updateUser({ userId: currentUser._id, payload: formData }).unwrap()
+      toast.success('User updated successfully')
+      setEditDialogueOpen(false)
+      setCurrentUser(null)
+    } catch (err: any) {
+      toast.error(err?.data?.message || 'Update failed')
+    }
   }
 
   return (
@@ -96,18 +110,25 @@ const ManageUsers: React.FC = () => {
             <div className="grid gap-4">
               <div className="grid gap-3">
                 <Label htmlFor="name">Name</Label>
-                <Input id="name" name="name" defaultValue="Pedro Duarte" />
+                <Input
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleFormChange}
+                />
               </div>
               <div className="grid gap-3">
-                <Label htmlFor="username-1">Username</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
-                  id="username-1"
+                  id="email"
                   name="username"
-                  defaultValue="@peduarte"
+                  value={formData.email}
+                  type="email"
+                  onChange={handleFormChange}
                 />
               </div>
             </div>
-            <div>
+            {/* <div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">Select Option</Button>
@@ -124,7 +145,7 @@ const ManageUsers: React.FC = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            </div>
+            </div> */}
             <DialogFooter>
               <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>
@@ -188,7 +209,9 @@ const ManageUsers: React.FC = () => {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={setEditDialogueOpen}
+                      onClick={() => {
+                        handleEditOpen(user)
+                      }}
                     >
                       Edit
                     </Button>
