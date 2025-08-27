@@ -18,7 +18,7 @@ interface FAQProps {
 export default function FAQ({ items }: FAQProps) {
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold">W/ chevron</h2>
+      <h2 className="text-xl font-bold">Frequently Asked Questions</h2>
       <Accordion type="single" collapsible className="w-full" defaultValue="3">
         {items.map((item) => (
           <AccordionItem value={item.id} key={item.id} className="py-2">

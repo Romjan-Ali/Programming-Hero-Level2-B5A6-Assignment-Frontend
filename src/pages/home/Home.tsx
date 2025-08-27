@@ -3,33 +3,54 @@ import { CircleCheck, Wallet } from 'lucide-react'
 import FAQ from './components/FAQ'
 import { Link } from 'react-router'
 
+import { useDispatch } from 'react-redux'
+import { openModal } from '@/redux/features/modal/modalSlice'
+
 const Home = () => {
   const { mode } = useThemeMode()
+
+  const dispatch = useDispatch()
+
+  const handleClickGetStarted = () => {
+    dispatch(openModal())
+  }
 
   const faqItems = [
     {
       id: '1',
-      title: 'What makes Origin UI different?',
+      title: 'How can I reset my password?',
       content:
-        'Origin UI focuses on developer experience and performance. Built with TypeScript, it offers excellent type safety, follows accessibility standards, and provides comprehensive documentation with regular updates.',
+        'To reset your password, click on the "Forgot Password" link on the login page. You will receive an email with instructions to reset your password.',
     },
     {
       id: '2',
-      title: 'How can I customize the components?',
+      title: 'How do I change my subscription plan?',
       content:
-        'Use our CSS variables for global styling, or className and style props for component-specific changes. We support CSS modules, Tailwind, and dark mode out of the box.',
+        'To change your subscription plan, go to your account settings and click on "Subscription". You can select the plan you wish to switch to from the available options.',
     },
     {
       id: '3',
-      title: 'Is Origin UI optimized for performance?',
+      title: 'Can I cancel my subscription anytime?',
       content:
-        'Yes, with tree-shaking, code splitting, and minimal runtime overhead. Most components are under 5KB gzipped.',
+        'Yes, you can cancel your subscription at any time. Simply go to the "Subscription" section in your account settings and click on "Cancel Subscription".',
     },
     {
       id: '4',
-      title: 'How accessible are the components?',
+      title: 'Do you offer customer support?',
       content:
-        'All components follow WAI-ARIA standards, featuring proper ARIA attributes, keyboard navigation, and screen reader support. Regular testing ensures compatibility with NVDA, VoiceOver, and JAWS.',
+        'Yes, we offer 24/7 customer support. You can reach us via email at support@example.com or use the live chat feature available on the website.',
+    },
+    {
+      id: '5',
+      title: 'What payment methods do you accept?',
+      content:
+        'We accept various payment methods, including credit/debit cards, PayPal, and bank transfers. You can choose your preferred method during checkout.',
+    },
+    {
+      id: '6',
+      title: 'How can I contact customer support?',
+      content:
+        'You can contact our customer support team via email at support@example.com or use the contact form available in the support section of our website.',
     },
   ]
 
@@ -86,7 +107,10 @@ const Home = () => {
               full access
             </li>
           </ul>
-          <button className="mt-4 px-6 py-2 rounded-full text-white text-xl cursor-pointer font-medium bg-gradient-to-r from-[#3a0ca3] to-[#bc6c57] hover:opacity-90 transition">
+          <button
+            className="mt-4 px-6 py-2 rounded-full text-white text-xl cursor-pointer font-medium bg-gradient-to-r from-[#3a0ca3] to-[#bc6c57] hover:opacity-90 transition"
+            onClick={handleClickGetStarted}
+          >
             Get Started
           </button>
         </div>
@@ -130,7 +154,9 @@ const Home = () => {
               the 1500s.
             </p>
             <div>
-              <button className="inline-block mt-4 px-6 py-2 rounded-full text-white text-xl cursor-pointer font-medium bg-gradient-to-r from-[#3a0ca3] to-[#bc6c57] hover:opacity-90 transition">
+              <button className="inline-block mt-4 px-6 py-2 rounded-full text-white text-xl cursor-pointer font-medium bg-gradient-to-r from-[#3a0ca3] to-[#bc6c57] hover:opacity-90 transition"
+                onClick={handleClickGetStarted}
+              >
                 Signup Now{' '}
               </button>
             </div>
@@ -142,17 +168,18 @@ const Home = () => {
         <h1 className="text-4xl capitalize font-bold">
           Frequently Asked{' '}
           <span className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 bg-clip-text text-transparent">
-            question{' '}
+            questions{' '}
           </span>
         </h1>
         <p className="text-lg">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry’s standard dummy text ever
-          since the 1500s.
+          Welcome to our FAQ section! Here, you will find answers to the most
+          commonly asked questions about our platform. If you can't find what
+          you're looking for, feel free to reach out to our customer support
+          team for further assistance.
         </p>
         <FAQ items={faqItems} />
         <div>
-          <Link to='/faq'>
+          <Link to="/faq">
             <button className="mt-2 px-6 py-2 rounded-full text-white text-xl cursor-pointer font-medium bg-gradient-to-r from-[#3a0ca3] to-[#bc6c57] hover:opacity-90 transition">
               More FAQ
             </button>
