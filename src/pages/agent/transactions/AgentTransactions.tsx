@@ -16,13 +16,13 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-import { useGetTransactionsQuery } from '@/redux/features/agent/agent.api'
+import { useGetTransactionsByFilterQuery } from '@/redux/features/transactions/transactions.api'
 import { format } from 'date-fns'
 
 const AgentTransactions: React.FC = () => {
   const [filter, setFilter] = useState<string>('all')
 
-  const { data: transactions } = useGetTransactionsQuery(undefined)
+  const { data: transactions } = useGetTransactionsByFilterQuery(undefined)
 
   console.log({ transactions })
 

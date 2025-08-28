@@ -1,9 +1,8 @@
 import { baseApi } from '@/redux/baseApi'
-import type {} from '@/types'
 
 export const transactionsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getTransactions: builder.query({
+    getTransactionsByFilter: builder.query({
       query: ({ page = 1, limit = 10, type, startDate, endDate }) => {
         const params = new URLSearchParams()
         params.set('page', String(page))
@@ -12,12 +11,15 @@ export const transactionsApi = baseApi.injectEndpoints({
         if (startDate) params.set('startDate', startDate)
         if (endDate) params.set('endDate', endDate)
 
+        console.log('params',params.toString())
+
         return {
-          url: `/transactions?${params.toString()}`
+          url: `/transaction/my-history?${params.toString()}`,
+          method: "GET"
         }
       },
     }),
   }),
 })
 
-export const { useGetTransactionsQuery } = transactionsApi
+export const { useGetTransactionsByFilterQuery } = transactionsApi

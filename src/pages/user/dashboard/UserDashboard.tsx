@@ -3,15 +3,43 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { useWalletQuery } from '@/redux/features/wallet/wallet.api'
-import { useGetTransactionsQuery } from '@/redux/features/user/user.api'
+import { useGetTransactionsByFilterQuery } from '@/redux/features/transactions/transactions.api'
 import { Link } from 'react-router'
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+
+type Itransaction = {
+  _id: string
+  type:
+    | 'top_up'
+    | 'withdraw'
+    | 'cash_in'
+    | 'cash_out'
+    | 'send_money'
+    | 'payment'
+    | 'add_money'
+  amount: number
+  createdAt: string
+}
 
 const UserDashboard: React.FC = () => {
   const [filterType, setFilterType] = useState<string>('all')
-  const [dateRange, setDateRange] = useState<{ from?: string; to?: string }>({})
-  const { data: transactions } = useGetTransactionsQuery({
-    filterType,
-    dateRange,
+  const today = new Date().toISOString().split('T')[0]
+  const [dateRange, setDateRange] = useState<{ from?: string; to?: string }>({
+    from: undefined,
+    to: today,
+  })
+  
+  const { data: transactions } = useGetTransactionsByFilterQuery({
+    type: filterType === 'all' ? undefined : filterType,
+    startDate: dateRange.from,
+    endDate: dateRange.to,
   })
   const { data: wallet } = useWalletQuery(undefined)
 
@@ -43,23 +71,35 @@ const UserDashboard: React.FC = () => {
       </Card>
 
       <div className="flex gap-4 my-4">
-        <select
-          className="border rounded-md px-2 py-1"
-          value={filterType}
-          onChange={(e) => setFilterType(e.target.value)}
+        <Select
+          onValueChange={(value) => setFilterType(value === 'all' ? '' : value)}
         >
-          <option value="all">All</option>
-          <option value="deposit">Deposit</option>
-          <option value="withdraw">Withdraw</option>
-          <option value="send">Send</option>
-        </select>
+          <SelectTrigger className="w-full md:w-1/4">
+            <SelectValue placeholder="Filter by Type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="top_up">top_up</SelectItem>
+            <SelectItem value="withdraw">withdraw</SelectItem>
+            <SelectItem value="cash_in">cash_in</SelectItem>
+            <SelectItem value="cash_out">cash_out</SelectItem>
+            <SelectItem value="send_money">send_money</SelectItem>
+            <SelectItem value="payment">payment</SelectItem>
+            <SelectItem value="add_money">add_money</SelectItem>
+          </SelectContent>
+        </Select>
         <Input
           type="date"
+          value={dateRange.from}
           onChange={(e) => setDateRange({ ...dateRange, from: e.target.value })}
+          max={dateRange.to}
         />
         <Input
           type="date"
+          value={dateRange.to}
           onChange={(e) => setDateRange({ ...dateRange, to: e.target.value })}
+          min={dateRange.from}
+          max={today}
         />
       </div>
 
@@ -68,7 +108,7 @@ const UserDashboard: React.FC = () => {
         <CardContent className="p-4">
           <h3 className="text-lg font-semibold mb-2">Recent Transactions</h3>
           <ul className="divide-y">
-            {transactions?.data?.slice(0, 5).map((tx: any) => (
+            {transactions?.data?.slice(0, 5).map((tx: Itransaction) => (
               <li key={tx._id} className="py-2 flex justify-between">
                 <span>{tx.type}</span>
                 <span>৳ {tx.amount}</span>

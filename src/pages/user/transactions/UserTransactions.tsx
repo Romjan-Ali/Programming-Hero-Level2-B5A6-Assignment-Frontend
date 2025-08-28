@@ -8,45 +8,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Button } from '@/components/ui/button'
 import { format } from 'date-fns'
 
-import { useGetTransactionsQuery } from '@/redux/features/user/user.api'
+import { useGetTransactionsByFilterQuery } from '@/redux/features/transactions/transactions.api'
+import SmartPagination from '@/components/SmartPagination'
 
 const UserTransactions = () => {
   const [filterType, setFilterType] = useState<string>('all')
-  const [dateRange, setDateRange] = useState<{ from: string; to: string }>({
-    from: '',
-    to: '',
-  })
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 5
 
-  const { data: transactions } = useGetTransactionsQuery({
-    filterType,
-    dateRange,
+  const today = new Date().toISOString().split('T')[0]
+  
+  const [dateRange, setDateRange] = useState<{
+    from: string | undefined
+    to: string | undefined
+  }>({
+    from: undefined,
+    to: today,
+  })
+
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const { data: transactions } = useGetTransactionsByFilterQuery({
+    type: filterType === 'all' ? undefined : filterType,
+    startDate: dateRange.from,
+    endDate: dateRange.to,
+    page: currentPage,
   })
 
   console.log({ transactions })
-
-  // Filter transactions
-  const filteredTransactions = transactions?.data
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ? transactions?.data?.filter((t: any) => {
-        const matchType = filterType === 'all' || t.type === filterType
-        const matchDate =
-          (!dateRange.from || new Date(t.date) >= new Date(dateRange.from)) &&
-          (!dateRange.to || new Date(t.date) <= new Date(dateRange.to))
-        return matchType && matchDate
-      })
-    : []
-
-  // Pagination
-  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage)
-  const displayedTransactions = filteredTransactions.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  )
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'N/A'
@@ -71,10 +60,13 @@ const UserTransactions = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
-              <SelectItem value="deposit">Deposit</SelectItem>
-              <SelectItem value="withdraw">Withdraw</SelectItem>
-              <SelectItem value="send">Send</SelectItem>
-              <SelectItem value="receive">Receive</SelectItem>
+              <SelectItem value="top_up">top_up</SelectItem>
+              <SelectItem value="withdraw">withdraw</SelectItem>
+              <SelectItem value="cash_in">cash_in</SelectItem>
+              <SelectItem value="cash_out">cash_out</SelectItem>
+              <SelectItem value="send_money">send_money</SelectItem>
+              <SelectItem value="payment">payment</SelectItem>
+              <SelectItem value="add_money">add_money</SelectItem>
             </SelectContent>
           </Select>
 
@@ -85,6 +77,7 @@ const UserTransactions = () => {
             onChange={(e) =>
               setDateRange((prev) => ({ ...prev, from: e.target.value }))
             }
+            max={dateRange.to}
           />
           <Input
             type="date"
@@ -93,6 +86,8 @@ const UserTransactions = () => {
             onChange={(e) =>
               setDateRange((prev) => ({ ...prev, to: e.target.value }))
             }
+            min={dateRange.from}
+            max={today}
           />
         </div>
       </CardHeader>
@@ -108,7 +103,7 @@ const UserTransactions = () => {
             </tr>
           </thead>
           <tbody>
-            {displayedTransactions.length === 0 ? (
+            {transactions?.data.length === 0 ? (
               <tr>
                 <td colSpan={4} className="text-center py-4">
                   No transactions found.
@@ -116,13 +111,13 @@ const UserTransactions = () => {
               </tr>
             ) : (
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              displayedTransactions.map((t: any) => (
+              transactions?.data.map((t: any) => (
                 <tr
-                  key={t.id}
+                  key={t._id}
                   className="border-t border-gray-200 dark:border-gray-700"
                 >
                   <td className="px-4 py-2">{formatDate(t.createdAt)}</td>
-                  <td className="px-4 py-2 uppercase">{t.type}</td>
+                  <td className="px-4 py-2">{t.type}</td>
                   <td className="px-4 py-2">৳{t.amount}</td>
                   <td className="px-4 py-2">{t?.to?.name || '-'}</td>
                 </tr>
@@ -132,22 +127,12 @@ const UserTransactions = () => {
         </table>
       </CardContent>
 
-      <div className="flex justify-between items-center p-4">
-        <Button
-          onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-          disabled={currentPage === 1}
-        >
-          Previous
-        </Button>
-        <span>
-          Page {currentPage} of {totalPages}
-        </span>
-        <Button
-          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-          disabled={currentPage === totalPages}
-        >
-          Next
-        </Button>
+      <div className="flex p-4">
+        <SmartPagination
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+          totalPages={transactions?.meta?.totalPage}
+        />
       </div>
     </Card>
   )

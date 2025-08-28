@@ -29,23 +29,6 @@ export const userApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['User'],
     }), 
-    
-
-    // TRANSACTIONS
-    getTransactions: builder.query({
-      query: ({ filterType, dateRange }) => {        
-        let query = '/transaction/my-history?'
-        if (filterType && filterType !== 'all') query += `type=${filterType}&`
-        if (dateRange?.from) query += `from=${dateRange.from}&`
-        if (dateRange?.to) query += `to=${dateRange.to}`
-        console.log('query', query)
-        return {
-          url: query,
-          method: 'GET',
-        }
-      },
-      providesTags: ['Transactions'],
-    }),
 
     deposit: builder.mutation({
       query: (body) => ({
@@ -79,7 +62,6 @@ export const userApi = baseApi.injectEndpoints({
 export const {
   useGetUserInfoQuery,
   useUpdateUserMutation,
-  useGetTransactionsQuery,
   useDepositMutation,
   useWithdrawMutation,
   useSendMoneyMutation,
