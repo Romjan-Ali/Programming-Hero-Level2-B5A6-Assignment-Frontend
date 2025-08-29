@@ -27,7 +27,7 @@ const SendMoney = () => {
     setLoading(true)
     try {
       await sendMoney({
-        toUserId: recipient,
+        recipientIdentifier: recipient,
         amount: Number(amount),
         reference,
       }).unwrap()

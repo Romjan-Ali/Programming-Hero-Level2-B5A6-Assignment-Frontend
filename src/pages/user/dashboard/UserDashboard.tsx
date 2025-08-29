@@ -35,7 +35,7 @@ const UserDashboard: React.FC = () => {
     from: undefined,
     to: today,
   })
-  
+
   const { data: transactions } = useGetTransactionsByFilterQuery({
     type: filterType === 'all' ? undefined : filterType,
     startDate: dateRange.from,
@@ -53,14 +53,14 @@ const UserDashboard: React.FC = () => {
           <div>
             <h2 className="text-lg font-semibold">Wallet Balance</h2>
             <p className="text-3xl font-bold">
-              ৳ {wallet?.data?.balance || '0.00'}
+              ৳ {wallet?.data?.balance || '-'}
             </p>
           </div>
           <div className="space-x-3">
             <Link to="/user/deposit">
               <Button variant="outline">Deposit</Button>
             </Link>
-            <Link to="user/withdraw">
+            <Link to="/user/withdraw">
               <Button variant="outline">Withdraw</Button>
             </Link>
             <Link to="/user/send-money">

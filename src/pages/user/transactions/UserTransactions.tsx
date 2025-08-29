@@ -17,7 +17,7 @@ const UserTransactions = () => {
   const [filterType, setFilterType] = useState<string>('all')
 
   const today = new Date().toISOString().split('T')[0]
-  
+
   const [dateRange, setDateRange] = useState<{
     from: string | undefined
     to: string | undefined
@@ -36,6 +36,7 @@ const UserTransactions = () => {
   })
 
   console.log({ transactions })
+  console.log('dateRange.to', dateRange.to)
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'N/A'

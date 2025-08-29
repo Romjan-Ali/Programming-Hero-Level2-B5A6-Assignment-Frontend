@@ -11,13 +11,14 @@ export const transactionsApi = baseApi.injectEndpoints({
         if (startDate) params.set('startDate', startDate)
         if (endDate) params.set('endDate', endDate)
 
-        console.log('params',params.toString())
+        console.log('params', params.toString())
 
         return {
           url: `/transaction/my-history?${params.toString()}`,
-          method: "GET"
+          method: 'GET',
         }
       },
+      providesTags: ['Transactions']
     }),
   }),
 })

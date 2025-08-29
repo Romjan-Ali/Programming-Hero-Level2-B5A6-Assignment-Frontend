@@ -19,8 +19,12 @@ const Withdraw = () => {
 
     setLoading(true)
     try {
-      await withdraw({ amount: Number(amount) }).unwrap()
-      toast.success(`Successfully withdrawn ৳${amount}`)
+      const result = await withdraw({ amount: Number(amount) }).unwrap()
+      if (result?.success) {
+        toast.success(`Successfully withdrawn ৳${amount}`)
+      } else {
+        toast.error(result?.message || "Something went wrong")
+      }
       setAmount('')
     } catch (error) {
       toast.error('Withdrawal failed. Try again.')
