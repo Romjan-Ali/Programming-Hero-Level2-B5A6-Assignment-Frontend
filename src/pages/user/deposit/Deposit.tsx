@@ -35,17 +35,17 @@ const Deposit: React.FC = () => {
       <Card className="w-full max-w-md shadow-lg rounded-2xl">
         <CardHeader>
           <CardTitle className="text-xl font-bold text-center">
-            Deposit Money
+            Deposit Money (Agent cash-in simulation)
           </CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleDeposit} className="space-y-4">
             <div>
-              <Label htmlFor="agentId">Agent ID</Label>
+              <Label htmlFor="agentId">Agent's Email or Phone Number</Label>
               <Input
                 id="agentId"
                 type="text"
-                placeholder="Enter agent ID"
+                placeholder="Enter agent's Email or Phone Number"
                 value={agentId}
                 onChange={(e) => setAgentId(e.target.value)}
                 required

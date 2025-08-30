@@ -31,7 +31,7 @@ const UserTransactions = () => {
   const { data: transactions } = useGetTransactionsByFilterQuery({
     type: filterType === 'all' ? undefined : filterType,
     startDate: dateRange.from,
-    endDate: dateRange.to,
+    endDate: dateRange.to === today ? undefined : dateRange.to,
     page: currentPage,
   })
 
