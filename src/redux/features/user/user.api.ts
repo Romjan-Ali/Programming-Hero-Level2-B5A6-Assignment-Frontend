@@ -28,7 +28,7 @@ export const userApi = baseApi.injectEndpoints({
         data: body,
       }),
       invalidatesTags: ['User'],
-    }), 
+    }),
 
     deposit: builder.mutation({
       query: (body) => ({
@@ -56,6 +56,15 @@ export const userApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Transactions', 'User'],
     }),
+
+    changeUserStatus: builder.mutation({
+      query: (data) => ({
+        url: `user/users/${data.userId}/status`,
+        method: 'PATCH',
+        data: data.statusData
+      }),
+      invalidatesTags: ['User']
+    }),
   }),
 })
 
@@ -65,5 +74,6 @@ export const {
   useDepositMutation,
   useWithdrawMutation,
   useSendMoneyMutation,
-  useSoftDeleteUserMutation
+  useSoftDeleteUserMutation,
+  useChangeUserStatusMutation
 } = userApi

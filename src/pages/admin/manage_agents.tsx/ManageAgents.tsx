@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -37,29 +36,32 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 
-import { useGetUsersQuery } from '@/redux/features/admin/admin.api'
+import {
+  useGetUsersQuery,
+  useToggleAgentStatusMutation,
+} from '@/redux/features/admin/admin.api'
 import { toast } from 'sonner'
 import {
-  useChangeUserStatusMutation,
   useSoftDeleteUserMutation,
 } from '@/redux/features/user/user.api'
 
-const ManageUsers: React.FC = () => {
+const ManageAgents: React.FC = () => {
   const [search, setSearch] = useState('')
-  const [activeStatus, setActiveStatus] = useState<
-    'all' | 'ACTIVE' | 'INACTIVE' | 'BLOCKED'
-  >('all')
+  const [activeStatus, setActiveStatus] = useState<boolean | undefined>(
+    undefined
+  )
+  console.log({ activeStatus })
   const [openDialogue, setOpenDialogue] = useState(false)
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
   const { data: users, isLoading: isLoadingUsers } = useGetUsersQuery({
-    role: 'USER',
+    role: 'AGENT',
+    isApproved: activeStatus,
     searchTerm: search || undefined,
-    isActive: activeStatus === 'all' ? undefined : activeStatus,
   })
 
-  const [changeUserStatus, { isLoading: isUserStatusUpdating }] =
-    useChangeUserStatusMutation()
+  const [toggleAgentStatus, { isLoading: isUserStatusUpdating }] =
+    useToggleAgentStatusMutation()
 
   const [softDeleteUser, { isLoading }] = useSoftDeleteUserMutation()
   console.log(isLoading)
@@ -69,7 +71,7 @@ const ManageUsers: React.FC = () => {
   const handleDelete = async (userId: string) => {
     try {
       await softDeleteUser(userId).unwrap()
-      toast.success('User deleted successfully')
+      toast.success('Agent deleted successfully')
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       toast.error(err?.data?.message || 'Something went wrong')
@@ -77,17 +79,14 @@ const ManageUsers: React.FC = () => {
     setDeleteId(null)
   }
 
-  const handleStatusClick = async (userId: string, status: string) => {
+  const handleStatusClick = async (userId: string) => {
+    console.log("userId", userId)
     try {
-      const result = await changeUserStatus({
-        userId,
-        statusData: {
-          status,
-        },
-      }).unwrap()
+      const result = await toggleAgentStatus( userId ).unwrap()
       if (result.success) {
         toast.success('User status changed successfully')
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       toast.error(err?.data?.message || 'Something went wrong')
     }
@@ -115,7 +114,7 @@ const ManageUsers: React.FC = () => {
       </AlertDialog>
       <Card className="w-full p-4 shadow-lg rounded-2xl">
         <CardContent>
-          <h2 className="text-2xl font-bold mb-4">Manage Users</h2>
+          <h2 className="text-2xl font-bold mb-4">Manage Agents</h2>
 
           <div className="flex justify-between items-center mb-4 gap-4">
             <Input
@@ -125,9 +124,15 @@ const ManageUsers: React.FC = () => {
               className="w-full"
             />
             <Select
-              onValueChange={(
-                value: 'all' | 'ACTIVE' | 'INACTIVE' | 'BLOCKED'
-              ) => setActiveStatus(value)}
+              onValueChange={(value) =>
+                setActiveStatus(
+                  value === 'approved'
+                    ? true
+                    : value === 'suspend'
+                    ? false
+                    : undefined
+                )
+              }
             >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Active Status" />
@@ -136,9 +141,8 @@ const ManageUsers: React.FC = () => {
                 <SelectGroup>
                   <SelectLabel>Active Status</SelectLabel>
                   <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="ACTIVE">Active</SelectItem>
-                  <SelectItem value="INACTIVE">Inactive</SelectItem>
-                  <SelectItem value="BLOCKED">Blocked</SelectItem>
+                  <SelectItem value="approved">Approved</SelectItem>
+                  <SelectItem value="suspend">Not Aproved</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -158,6 +162,7 @@ const ManageUsers: React.FC = () => {
             </TableHeader>
             <TableBody>
               {users?.data?.length > 0 ? (
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 users?.data?.map((user: any) => (
                   <TableRow key={user._id}>
                     <TableCell>
@@ -177,7 +182,7 @@ const ManageUsers: React.FC = () => {
                         : '-'}
                     </TableCell>
                     <TableCell className="capitalize">
-                      {user?.isActive?.toLowerCase()}
+                      {user?.isApproved ? 'Approved' : 'Suspended'}
                     </TableCell>
                     <TableCell className="space-x-2">
                       <Button
@@ -185,22 +190,13 @@ const ManageUsers: React.FC = () => {
                         size="sm"
                         variant="outline"
                         disabled={isUserStatusUpdating}
-                        onClick={() =>
-                          handleStatusClick(
-                            user._id,
-                            user?.isActive === 'ACTIVE' ||
-                              user?.isActive === 'INACTIVE'
-                              ? 'BLOCKED'
-                              : 'ACTIVE'
-                          )
-                        }
+                        onClick={() => handleStatusClick(user._id)}
                       >
                         {isUserStatusUpdating
                           ? '...'
-                          : user?.isActive === 'ACTIVE' ||
-                            user?.isActive === 'INACTIVE'
-                          ? 'Block'
-                          : 'Unblock'}
+                          : user?.isApproved
+                          ? 'Suspend'
+                          : 'Approve'}
                       </Button>
                       <Button
                         className="cursor-pointer"
@@ -218,12 +214,16 @@ const ManageUsers: React.FC = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={7} className='text-center text-gray-400'>No user found.</TableCell>
+                  <TableCell colSpan={7} className="text-center text-gray-400">
+                    No user found.
+                  </TableCell>
                 </TableRow>
               )}
               {isLoadingUsers && (
                 <TableRow>
-                  <TableCell colSpan={7} className='text-center text-gray-400'>Loading ...</TableCell>
+                  <TableCell colSpan={7} className="text-center text-gray-400">
+                    Loading ...
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -234,4 +234,4 @@ const ManageUsers: React.FC = () => {
   )
 }
 
-export default ManageUsers
+export default ManageAgents

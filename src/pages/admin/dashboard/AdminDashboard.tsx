@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Users, Wallet, ArrowUpRight } from 'lucide-react'
 import {
@@ -12,13 +11,14 @@ import {
 import { useGetUsersQuery } from '@/redux/features/admin/admin.api'
 import { useGetWalletsQuery } from '@/redux/features/admin/admin.api'
 import { useGetTransactionsQuery } from '@/redux/features/admin/admin.api'
+import { Link } from 'react-router'
 
 const AdminDashboard: React.FC = () => {
   const { data: users } = useGetUsersQuery({ role: 'USER' })
   const { data: agents } = useGetUsersQuery({ role: 'AGENT' })
   const { data: admins } = useGetUsersQuery({ role: 'ADMIN' })
   const { data: wallets } = useGetWalletsQuery('')
-  const { data: transactions } = useGetTransactionsQuery({limit: '20'})
+  const { data: transactions } = useGetTransactionsQuery({ limit: '10' })
 
   console.log({ users, agents, admins, wallets, transactions })
 
@@ -80,45 +80,6 @@ const AdminDashboard: React.FC = () => {
         </Card>
       </div>
 
-      {/* Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Manage Users</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <Button className="w-full">View All Users</Button>
-            <Button variant="outline" className="w-full">
-              Block/Unblock User
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Manage Agents</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <Button className="w-full">View All Agents</Button>
-            <Button variant="outline" className="w-full">
-              Add New Agent
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Transactions</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <Button className="w-full">View All Transactions</Button>
-            <Button variant="outline" className="w-full">
-              Approve Pending
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-
       {/* Recent Activity */}
       <div className="mt-8">
         <h2 className="text-xl font-semibold mb-4">Recent Transactions</h2>
@@ -135,51 +96,58 @@ const AdminDashboard: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                
-                {transactions?.data?.map((transaction: any) => (
-                  <tr key={transaction._id} className="border-b">
-                    <td className="p-2">
-                      <Tooltip>
-                        <TooltipTrigger>
-                          {'...' + transaction?._id?.slice(-5)}
-                        </TooltipTrigger>
-                        <TooltipContent>{transaction?._id}</TooltipContent>
-                      </Tooltip>
-                    </td>
-                    <td className="p-2">
-                      <Tooltip>
-                        <TooltipTrigger>
-                          {transaction?.from?.name
-                            ? transaction?.from?.name
-                            : '-'}
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <div>
-                            From:{' '}
+                {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  transactions?.data?.map((transaction: any) => (
+                    <tr key={transaction._id} className="border-b">
+                      <td className="p-2">
+                        <Tooltip>
+                          <TooltipTrigger>
+                            {'...' + transaction?._id?.slice(-5)}
+                          </TooltipTrigger>
+                          <TooltipContent>{transaction?._id}</TooltipContent>
+                        </Tooltip>
+                      </td>
+                      <td className="p-2">
+                        <Tooltip>
+                          <TooltipTrigger>
                             {transaction?.from?.name
                               ? transaction?.from?.name
                               : '-'}
-                          </div>
-                          <div>
-                            To:{' '}
-                            {transaction?.from?.name
-                              ? transaction?.to?.name
-                              : '-'}
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    </td>
-                    <td className="p-2 flex items-center gap-1">
-                      {transaction?.type}
-                    </td>
-                    <td className="p-2">৳ {transaction?.amount}</td>
-                    <td className="p-2">{transaction?.status}</td>
-                  </tr>
-                ))}
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <div>
+                              From:{' '}
+                              {transaction?.from?.name
+                                ? transaction?.from?.name
+                                : '-'}
+                            </div>
+                            <div>
+                              To:{' '}
+                              {transaction?.from?.name
+                                ? transaction?.to?.name
+                                : '-'}
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </td>
+                      <td className="p-2 flex items-center gap-1">
+                        {transaction?.type}
+                      </td>
+                      <td className="p-2">৳ {transaction?.amount}</td>
+                      <td className="p-2">{transaction?.status}</td>
+                    </tr>
+                  ))
+                }
               </tbody>
             </table>
           </CardContent>
         </Card>
+        <Link to="/admin/transactions">
+          <Button variant="link" className="mt-2 p-0">
+            View All Transactions →
+          </Button>
+        </Link>
       </div>
     </div>
   )

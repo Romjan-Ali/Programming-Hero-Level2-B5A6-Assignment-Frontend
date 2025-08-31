@@ -41,10 +41,10 @@ export const adminApi = baseApi.injectEndpoints({
       providesTags: ['Transactions'],
     }),
 
-    // Block or unblock a user
-    toggleUserStatus: builder.mutation({
+    // Approve or suspend an agent
+    toggleAgentStatus: builder.mutation({
       query: (userId) => ({
-        url: `/admin/users/${userId}/toggle-status`,
+        url: `/admin/agents/${userId}/status`,
         method: 'PATCH',
       }),
       invalidatesTags: ['User'],
@@ -73,7 +73,7 @@ export const adminApi = baseApi.injectEndpoints({
 
 export const {
   useGetTransactionsQuery,
-  useToggleUserStatusMutation,
+  useToggleAgentStatusMutation,
   useAddAgentMutation,
   useApproveRejectTransactionMutation,
   useGetUsersQuery,

@@ -15,97 +15,136 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 import { useGetTransactionsByFilterQuery } from '@/redux/features/transactions/transactions.api'
 import { format } from 'date-fns'
+import SmartPagination from '@/components/SmartPagination'
+import { Input } from '@/components/ui/input'
 
 const AgentTransactions: React.FC = () => {
-  const [filter, setFilter] = useState<string>('all')
+  const [filterType, setFilterType] = useState<string>('all')
 
-  const { data: transactions } = useGetTransactionsByFilterQuery(undefined)
+  const today = new Date().toISOString().split('T')[0]
 
-  console.log({ transactions })
+  const [dateRange, setDateRange] = useState<{
+    from: string | undefined
+    to: string | undefined
+  }>({
+    from: undefined,
+    to: today,
+  })
 
-  const filteredTransactions =
-    transactions?.data ?? filter === 'all'
-      ? transactions?.data
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      : transactions?.data.filter((txn: any) => txn.type === filter) || []
+  const [currentPage, setCurrentPage] = useState(1)
 
-  console.log({ filteredTransactions })
+  const { data: transactions } = useGetTransactionsByFilterQuery({
+    type: filterType === 'all' ? undefined : filterType,
+    startDate: dateRange.from,
+    endDate: dateRange.to === today ? undefined : dateRange.to,
+    page: currentPage,
+  })
 
   return (
-    <div className="p-6">
-      <Card className="shadow-md">
-        <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <CardTitle>Agent Transactions</CardTitle>
-          <Select value={filter} onValueChange={setFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="cash_in">Cash In</SelectItem>
-              <SelectItem value="cash_out">Cash Out</SelectItem>
-              <SelectItem value="send_money">Send Money</SelectItem>
-            </SelectContent>
-          </Select>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Date</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredTransactions.length > 0 ? (
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  filteredTransactions.map((txn: any) => (
-                    <TableRow key={txn._id}>
-                      <TableCell>{txn._id}</TableCell>
-                      <TableCell className="capitalize">
-                        {txn.type.replace('_', ' ')}
-                      </TableCell>
-                      <TableCell>{txn?.to?.name || '-'}</TableCell>
-                      <TableCell className="text-green-600 font-semibold">
-                        ৳{txn.amount.toFixed(2)}
-                      </TableCell>
-                      <TableCell
-                        className={
-                          txn.status === 'success'
-                            ? 'text-green-600 font-medium'
-                            : txn.status === 'pending'
-                            ? 'text-yellow-600 font-medium'
-                            : 'text-red-600 font-medium'
-                        }
-                      >
-                        {txn.status}
-                      </TableCell>
-                      <TableCell>
-                        {format(new Date(txn.createdAt), 'MM/dd/yyyy')}
+    <>
+      <div className="p-6">
+        <Card className="shadow-md">
+          <CardHeader className='flex flex-col gap-4'>
+            <CardTitle className="text-nowrap">Agent Transactions</CardTitle>
+            <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+              <Select value={filterType} onValueChange={setFilterType}>
+                <SelectTrigger className="w-[360px]">
+                  <SelectValue placeholder="Filter by type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="cash_in">Cash In</SelectItem>
+                  <SelectItem value="cash_out">Cash Out</SelectItem>
+                  <SelectItem value="send_money">Send Money</SelectItem>
+                </SelectContent>
+              </Select>
+              <Input
+                type="date"
+                placeholder="From"
+                value={dateRange.from}
+                onChange={(e) =>
+                  setDateRange((prev) => ({ ...prev, from: e.target.value }))
+                }
+                max={dateRange.to}
+              />
+              <Input
+                type="date"
+                placeholder="To"
+                value={dateRange.to}
+                onChange={(e) =>
+                  setDateRange((prev) => ({ ...prev, to: e.target.value }))
+                }
+                min={dateRange.from}
+                max={today}
+              />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Date</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {transactions?.data.length > 0 ? (
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    transactions?.data.map((txn: any) => (
+                      <TableRow key={txn._id}>
+                        <TableCell>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              {'...' + txn?._id?.slice(-5)}
+                            </TooltipTrigger>
+                            <TooltipContent>{txn?._id}</TooltipContent>
+                          </Tooltip>
+                        </TableCell>
+                        <TableCell className="capitalize">
+                          {txn.type.replace('_', ' ')}
+                        </TableCell>
+                        <TableCell>{txn?.to?.name || '-'}</TableCell>
+                        <TableCell>৳{txn.amount.toFixed(2)}</TableCell>
+                        <TableCell>{txn.status}</TableCell>
+                        <TableCell>
+                          {format(new Date(txn.createdAt), 'MM/dd/yyyy')}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center">
+                        No transactions found.
                       </TableCell>
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center">
-                      No transactions found.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="flex mb-8">
+        <SmartPagination
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+          totalPages={transactions?.meta?.totalPage}
+        />
+      </div>
+    </>
   )
 }
 

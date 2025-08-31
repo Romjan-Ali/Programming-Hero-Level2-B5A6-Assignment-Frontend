@@ -4,62 +4,97 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { format } from 'date-fns'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+
+import { toast } from 'sonner'
+import { Link } from 'react-router'
+
+import { useWalletQuery } from '@/redux/features/wallet/wallet.api'
 
 import {
   useCashInMutation,
   useCashOutMutation,
 } from '@/redux/features/agent/agent.api'
-import { useWalletQuery } from '@/redux/features/wallet/wallet.api'
-import { toast } from 'sonner'
+
+import { useGetTransactionsByFilterQuery } from '@/redux/features/transactions/transactions.api'
 
 const AgentDashboard: React.FC = () => {
-  const [cashInUserId, setCashInUserId] = useState('')
-  const [cashInAmount, setCashInAmount] = useState('')
-  const [cashInReference, setCashInReference] = useState('')
+  const [recipientIdentifier, setRecipientIdentifier] = useState('')
+  const [amount, setAmount] = useState('')
+  const [reference, setReference] = useState('')
 
-  const [cashOutUserId, setCashOutUserId] = useState('')
-  const [cashOutAmount, setCashOutAmount] = useState('')
-  const [cashOutReference, setCashOutReference] = useState('')
+  const [filterType, setFilterType] = useState<string>('all')
+
+  const {data: wallet} = useWalletQuery(undefined)
 
   const [cashIn, { isLoading: cashInLoading }] = useCashInMutation()
   const [cashOut, { isLoading: cashOutLoading }] = useCashOutMutation()
-  const { data: wallet } = useWalletQuery(undefined)
 
-  const handleSubmitCashIn = async (e: React.FormEvent<HTMLFormElement>) => {
+  const { data: transactions } = useGetTransactionsByFilterQuery({
+    type: filterType === 'all' ? undefined : filterType,
+  })
+
+  const handleSubmitCashIn = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!recipientIdentifier || !amount) {
+      toast.error("Please provide User's Email or Phone Number and Amount")
+      return
+    }
 
     try {
       await cashIn({
-        toUserId: cashInUserId,
-        amount: Number(cashInAmount),
-        reference: cashInReference,
+        recipientIdentifier,
+        amount: Number(amount),
+        reference,
       }).unwrap()
-
-      setCashInAmount('')
-      setCashInReference('')
-
-      toast.success('Cash In successfully')
+      setAmount('')
+      setReference('')
+      toast.success('Cash in successfully')
     } catch (error: any) {
-      toast.error(error?.data?.message || 'Something went wrong')
+      toast.error(error?.data?.message || 'Server connection failed!')
     }
   }
 
-  const handleSubmitCashOut = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitCashOut = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    try {
-      await cashOut({
-        toUserId: cashOutUserId,
-        amount: Number(cashOutAmount),
-        reference: cashOutReference,
-      }).unwrap()
-
-      setCashOutAmount('')
-      setCashOutReference('')
-
-      toast.success('Cash Out successfully')
-    } catch (error: any) {
-      toast.error(error?.data?.message || 'Something went wrong')
+    if (recipientIdentifier && parseFloat(amount) > 0) {
+      try {
+        await cashOut({
+          recipientIdentifier,
+          amount: Number(amount),
+          reference,
+        }).unwrap()
+        setAmount('')
+        setReference('')
+        toast.success('Cash out successfully')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        toast.error(error?.data?.message || 'Something went wrong!')
+      }
+    } else {
+      toast.error('Please provide a valid User ID and Amount.')
     }
   }
 
@@ -72,7 +107,9 @@ const AgentDashboard: React.FC = () => {
             <CardTitle>Wallet Balance</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-green-600">৳ {wallet?.data?.balance}</p>
+            <p className="text-2xl font-bold text-green-600">
+              ৳ {wallet?.data?.balance}
+            </p>
           </CardContent>
         </Card>
 
@@ -92,19 +129,19 @@ const AgentDashboard: React.FC = () => {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <Input
-                    value={cashInUserId}
-                    onChange={(e) => setCashInUserId(e.target.value)}
+                    value={recipientIdentifier}
+                    onChange={(e) => setRecipientIdentifier(e.target.value)}
                     placeholder="Enter User Phone/Email"
                   />
                   <Input
-                    value={cashInAmount}
-                    onChange={(e) => setCashInAmount(e.target.value)}
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
                     placeholder="Amount (৳)"
                     type="number"
                   />
                   <Input
-                    value={cashInReference}
-                    onChange={(e) => setCashInReference(e.target.value)}
+                    value={reference}
+                    onChange={(e) => setReference(e.target.value)}
                     placeholder="Reference"
                   />
                   <Button
@@ -128,19 +165,19 @@ const AgentDashboard: React.FC = () => {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <Input
-                    value={cashOutUserId}
-                    onChange={(e) => setCashOutUserId(e.target.value)}
+                    value={recipientIdentifier}
+                    onChange={(e) => setRecipientIdentifier(e.target.value)}
                     placeholder="Enter User Phone/Email"
                   />
                   <Input
-                    value={cashOutAmount}
-                    onChange={(e) => setCashOutAmount(e.target.value)}
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
                     placeholder="Amount (৳)"
                     type="number"
                   />
                   <Input
-                    value={cashOutReference}
-                    onChange={(e) => setCashOutReference(e.target.value)}
+                    value={reference}
+                    onChange={(e) => setReference(e.target.value)}
                     placeholder="Reference"
                   />
                   <Button
@@ -157,36 +194,74 @@ const AgentDashboard: React.FC = () => {
         </Tabs>
 
         {/* Recent Transactions */}
+
         <Card className="shadow-md">
-          <CardHeader>
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <CardTitle>Recent Transactions</CardTitle>
+            <Select value={filterType} onValueChange={setFilterType}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="cash_in">Cash In</SelectItem>
+                <SelectItem value="cash_out">Cash Out</SelectItem>
+                <SelectItem value="send_money">Send Money</SelectItem>
+              </SelectContent>
+            </Select>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
-              {[
-                { id: 1, type: 'Cash In', amount: 2000, user: '017XXXXXXXX' },
-                { id: 2, type: 'Cash Out', amount: 1500, user: '018XXXXXXXX' },
-              ].map((tx) => (
-                <div
-                  key={tx.id}
-                  className="flex justify-between p-2 border rounded-lg"
-                >
-                  <div>
-                    <p className="font-medium">{tx.type}</p>
-                    <p className="text-sm text-gray-500">{tx.user}</p>
-                  </div>
-                  <p
-                    className={`font-bold ${
-                      tx.type === 'Cash In' ? 'text-green-600' : 'text-red-600'
-                    }`}
-                  >
-                    ৳ {tx.amount}
-                  </p>
-                </div>
-              ))}
-            </div>
+            <Table className="overflow-x-auto">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Customer</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Date</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {transactions?.data.length > 0 ? (
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  transactions?.data.map((txn: any) => (
+                    <TableRow key={txn._id}>
+                      <TableCell>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            {'...' + txn?._id?.slice(-5)}
+                          </TooltipTrigger>
+                          <TooltipContent>{txn?._id}</TooltipContent>
+                        </Tooltip>
+                      </TableCell>
+                      <TableCell className="capitalize">
+                        {txn.type.replace('_', ' ')}
+                      </TableCell>
+                      <TableCell>{txn?.to?.name || '-'}</TableCell>
+                      <TableCell>৳{txn.amount.toFixed(2)}</TableCell>
+                      <TableCell>{txn.status}</TableCell>
+                      <TableCell>
+                        {format(new Date(txn.createdAt), 'MM/dd/yyyy')}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center">
+                      No transactions found.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
+        <Link to="/agent/transactions">
+          <Button variant="link" className="mt-2 p-0">
+            View All Transactions →
+          </Button>
+        </Link>
       </div>
     </div>
   )

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -8,7 +9,7 @@ import { toast } from 'sonner'
 import { useCashInMutation } from '@/redux/features/agent/agent.api'
 
 const CashIn: React.FC = () => {
-  const [userId, setUserId] = useState('')
+  const [recipientIdentifier, setRecipientIdentifier] = useState('')
   const [amount, setAmount] = useState('')
   const [reference, setReference] = useState('')
 
@@ -17,14 +18,14 @@ const CashIn: React.FC = () => {
   const handleCashIn = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!userId || !amount) {
-      toast.error('Please provide User ID and Amount')
+    if (!recipientIdentifier || !amount) {
+      toast.error('Please provide User\'s Email or Phone Number and Amount')
       return
     }
 
     try {
       await cashIn({
-        toUserId: userId,
+        recipientIdentifier,
         amount: Number(amount),
         reference,
       }).unwrap()
@@ -45,13 +46,13 @@ const CashIn: React.FC = () => {
         <CardContent>
           <form onSubmit={handleCashIn} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="userId">User ID</Label>
+              <Label htmlFor="recipientIdentifier">Email or Phone Number</Label>
               <Input
-                id="userId"
+                id="recipientIdentifier"
                 type="text"
-                value={userId}
-                onChange={(e) => setUserId(e.target.value)}
-                placeholder="Enter User ID"
+                value={recipientIdentifier}
+                onChange={(e) => setRecipientIdentifier(e.target.value)}
+                placeholder="Enter User's Email or Phone Number"
               />
             </div>
             <div className="space-y-2">

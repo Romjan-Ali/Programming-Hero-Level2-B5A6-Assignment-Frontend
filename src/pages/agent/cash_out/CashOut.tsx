@@ -8,7 +8,7 @@ import { toast } from 'sonner'
 import { useCashOutMutation } from '@/redux/features/agent/agent.api'
 
 const CashOut: React.FC = () => {
-  const [userId, setUserId] = useState('')
+  const [recipientIdentifier, setRecipientIdentifier] = useState('')
   const [amount, setAmount] = useState('')
   const [reference, setReference] = useState('')
 
@@ -17,16 +17,17 @@ const CashOut: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (userId && parseFloat(amount) > 0) {
+    if (recipientIdentifier && parseFloat(amount) > 0) {
       try {
         await cashOut({
-          toUserId: userId,
+          recipientIdentifier,
           amount: Number(amount),
           reference,
         }).unwrap()
         setAmount('')
         setReference('')
         toast.success('Cash out successfully')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         toast.error(error?.data?.message || 'Something went wrong!')
       }
@@ -43,15 +44,15 @@ const CashOut: React.FC = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* User ID */}
+            {/* User's Email or Phone Number */}
             <div className="space-y-2">
-              <Label htmlFor="userId">User ID</Label>
+              <Label htmlFor="recipientIdentifier">Email or Phone Number</Label>
               <Input
-                id="userId"
-                name="userId"
-                value={userId}
-                onChange={(e) => setUserId(e.target.value)}
-                placeholder="Enter User ID"
+                id="recipientIdentifier"
+                name="recipientIdentifier"
+                value={recipientIdentifier}
+                onChange={(e) => setRecipientIdentifier(e.target.value)}
+                placeholder="Enter User's Email or Phone Number"
               />
             </div>
 
