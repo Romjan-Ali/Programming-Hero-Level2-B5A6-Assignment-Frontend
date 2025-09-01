@@ -70,7 +70,7 @@ const AdminSettings: React.FC = () => {
 
         {/* Save Button */}
         <Button onClick={handleSave} className="w-full py-3" disabled={isLoading}>
-          {isLoading ? "Save Settings" : "..."}
+          {isLoading ? "Save Settings" : "Loading ..."}
         </Button>
       </CardContent>
     </Card>
