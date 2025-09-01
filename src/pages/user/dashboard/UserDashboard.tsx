@@ -50,13 +50,13 @@ const UserDashboard: React.FC = () => {
       {/* Wallet Overview */}
       <Card className="shadow-md rounded-2xl">
         <CardContent className="p-6 flex justify-between items-center">
-          <div>
+          <div className='wallet-balance'>
             <h2 className="text-lg font-semibold">Wallet Balance</h2>
             <p className="text-3xl font-bold">
               ৳ {wallet?.data?.balance || '-'}
             </p>
           </div>
-          <div className="space-x-3">
+          <div className="space-x-3 quick-actions">
             <Link to="/user/deposit">
               <Button variant="outline">Deposit</Button>
             </Link>
@@ -119,7 +119,7 @@ const UserDashboard: React.FC = () => {
             ))}
           </ul>
           <Link to="/user/transactions">
-            <Button variant="link" className="mt-2 p-0">
+            <Button variant="link" className="mt-2 p-0 transaction-history">
               View All Transactions →
             </Button>
           </Link>

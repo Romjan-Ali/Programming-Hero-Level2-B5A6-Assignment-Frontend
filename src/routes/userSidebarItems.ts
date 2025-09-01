@@ -35,8 +35,8 @@ export const userSidebarItems = [
         component: UserTransactions,
       },
       {
-        title: 'Profile',
-        url: '/user/profile',
+        title: 'Profile Settings',
+        url: '/user/profile-settings',
         component: Profile,
       },
     ],

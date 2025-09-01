@@ -1,6 +1,7 @@
 import CashIn from '@/pages/agent/cash_in/CashIn'
 import CashOut from '@/pages/agent/cash_out/CashOut'
 import AgentDashboard from '@/pages/agent/dashboard/AgentDashboard'
+import AgentSettings from '@/pages/agent/settings/AgentSettings'
 import AgentTransactions from '@/pages/agent/transactions/AgentTransactions'
 
 export const agentSidebarItems = [
@@ -26,6 +27,11 @@ export const agentSidebarItems = [
         title: 'Transactions',
         url: '/agent/transactions',
         component: AgentTransactions
+      },
+      {
+        title: 'Settings',
+        url: '/agent/settings',
+        component: AgentSettings
       }
     ],
   },
