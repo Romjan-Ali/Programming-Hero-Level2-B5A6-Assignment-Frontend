@@ -66,13 +66,13 @@ const AdminTransactions = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>
-                <SelectItem value="top_up">top_up</SelectItem>
-                <SelectItem value="withdraw">withdraw</SelectItem>
-                <SelectItem value="cash_in">cash_in</SelectItem>
-                <SelectItem value="cash_out">cash_out</SelectItem>
-                <SelectItem value="send_money">send_money</SelectItem>
-                <SelectItem value="payment">payment</SelectItem>
-                <SelectItem value="add_money">add_money</SelectItem>
+                <SelectItem value="top_up">Top Up</SelectItem>
+                <SelectItem value="withdraw">Withdraw</SelectItem>
+                <SelectItem value="cash_in">Cash In</SelectItem>
+                <SelectItem value="cash_out">Cash Out</SelectItem>
+                <SelectItem value="send_money">Send Money</SelectItem>
+                <SelectItem value="payment">Payment</SelectItem>
+                <SelectItem value="add_money">Add Money</SelectItem>
               </SelectContent>
             </Select>
 
