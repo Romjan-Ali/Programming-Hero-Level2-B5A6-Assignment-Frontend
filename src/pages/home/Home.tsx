@@ -83,28 +83,27 @@ const Home = () => {
       </section>
       <section className="grid grid-cols-1 lg:grid-cols-2 p-16 gap-16">
         <div className="flex-1">
-          <h1 className="text-5xl">Our easy steps for Registration</h1>
+          <h1 className="text-5xl">Our Easy Steps for Registration</h1>
           <p className="mt-4 text-2xl">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry’s standard dummy text
-            ever since the 1500s.
+            Get started with Wallex in just a few simple steps and enjoy
+            seamless mobile banking.
           </p>
           <ul className="mt-4 gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2">
             <li className="flex items-center gap-x-2 text-lg">
-              <CircleCheck className="text-green-700" size={18} /> Sign up with
-              NID card
+              <CircleCheck className="text-green-700" size={18} /> Create your
+              account
             </li>
             <li className="flex items-center gap-x-2 text-lg">
-              <CircleCheck className="text-green-700" size={18} /> Verify mobile
-              number
+              <CircleCheck className="text-green-700" size={18} /> Verify email
+              address
             </li>
             <li className="flex items-center gap-x-2 text-lg">
-              <CircleCheck className="text-green-700" size={18} /> Take a selfie
-              video
+              <CircleCheck className="text-green-700" size={18} /> Deposit your
+              first funds
             </li>
             <li className="flex items-center gap-x-2 text-lg">
-              <CircleCheck className="text-green-700" size={18} /> Enjoy the
-              full access
+              <CircleCheck className="text-green-700" size={18} /> Start
+              transacting securely
             </li>
           </ul>
           <button
@@ -114,6 +113,7 @@ const Home = () => {
             Get Started
           </button>
         </div>
+
         <div className="flex-1 object-cover">
           <img
             className="scale-130 sm:scale-100"
@@ -143,18 +143,21 @@ const Home = () => {
               </span>
             </h2>
             <p className="text-2xl">
-              Wallex is the fastestmobile banking solution Lorem Ipsum is simply
-              dummy text of the printing and typesetting industry. Lorem Ipsum
-              has been the industry’s standard dummy text ever since the
-              1500s.Lorem Ipsum is simply dummy text of the printing and
-              typesetting industry.
+              Wallex is the fastest and most secure mobile banking solution.
+              With Wallex, you can easily manage your wallet, make instant
+              transfers, deposit or withdraw money, and track all your
+              transactions in real-time. Our platform is designed to give you a
+              seamless and reliable financial experience, anytime and anywhere.
             </p>
             <p className="text-2xl">
-              Lorem Ipsum has been the industry’s standard dummy text ever since
-              the 1500s.
+              Join thousands of users who trust Wallex for their daily
+              transactions and experience the convenience of managing your
+              finances from the palm of your hand.
             </p>
+
             <div>
-              <button className="inline-block mt-4 px-6 py-2 rounded-full text-white text-xl cursor-pointer font-medium bg-gradient-to-r from-[#3a0ca3] to-[#bc6c57] hover:opacity-90 transition"
+              <button
+                className="inline-block mt-4 px-6 py-2 rounded-full text-white text-xl cursor-pointer font-medium bg-gradient-to-r from-[#3a0ca3] to-[#bc6c57] hover:opacity-90 transition"
                 onClick={handleClickGetStarted}
               >
                 Signup Now{' '}

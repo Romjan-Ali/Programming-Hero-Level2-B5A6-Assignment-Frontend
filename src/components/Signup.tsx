@@ -46,9 +46,9 @@ const Signup = () => {
     password: string
     role: string
   }>({
-    name: 'John Doe',
-    email: 'admin@gmail.com',
-    password: 'admin_50@/50',
+    name: '',
+    email: '',
+    password: '',
     role: 'USER',
   })
 
@@ -168,7 +168,7 @@ const Signup = () => {
               inputData={inputData}
             />
           </div>
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button type="submit" className="w-full cursor-pointer" disabled={isLoading}>
             {isLoading ? <LoaderCircle className="animate-spin" /> : 'Sign up'}
           </Button>
         </form>

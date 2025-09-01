@@ -86,20 +86,21 @@ bun run dev
 
 The app should now be running at http://localhost:5137.
 
+## Project Structure
+
 ```
-Project Structure
-text
-Copy code
 src/
 ├─ components/          # Reusable UI components (Card, Button, Input, Table, Dialog)
 ├─ pages/               # Application pages
 ├─ redux/               # Redux slices and RTK Query API
 │  ├─ features/
 │  │  ├─ admin/
-│  │  └─ user/
+│  │  ├─ user/
+│  ... ...
 ├─ styles/              # Global Tailwind CSS styles
 ├─ App.tsx              # Main app component
-└─ main.tsx             # Entry point
+├─ main.tsx             # Entry point
+...
 ```
 
 ## Components
@@ -120,7 +121,7 @@ src/
 
 ## Usage
 
-- **Manage Users: **Navigate to the users page to view all registered users.
+- **Manage Users:** Navigate to the users page to view all registered users.
 
 - **Search Users:** Use the search input to filter users by name, email, or phone.
 

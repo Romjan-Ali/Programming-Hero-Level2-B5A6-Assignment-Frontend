@@ -32,8 +32,8 @@ export default function Signin() {
     email: string
     password: string
   }>({
-    email: 'bob@example.com',
-    password: 'hashed_@Password_2',
+    email: '',
+    password: '',
   })
 
   const dispatch = useDispatch()
