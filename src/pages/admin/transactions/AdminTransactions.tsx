@@ -48,7 +48,7 @@ const AdminTransactions = () => {
         </CardHeader>
         <CardContent>
           {/* Filters */}
-          <div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
+          <div className="flex flex-col md:flex-row md:items-center gap-3 mb-4 search-filters">
             <Input
               placeholder="Search by name / email / type / status / reference"
               value={searchTerm}

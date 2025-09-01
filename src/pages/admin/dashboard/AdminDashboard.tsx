@@ -30,7 +30,7 @@ const AdminDashboard: React.FC = () => {
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <Card>
-          <CardContent className="flex items-center justify-between p-6">
+          <CardContent className="flex items-center justify-between p-6 total-users">
             <div>
               <p className="text-muted-foreground text-sm">Total Users</p>
               <h2 className="text-xl font-semibold">
@@ -42,7 +42,7 @@ const AdminDashboard: React.FC = () => {
         </Card>
 
         <Card>
-          <CardContent className="flex items-center justify-between p-6">
+          <CardContent className="flex items-center justify-between p-6 total-agents">
             <div>
               <p className="text-muted-foreground text-sm">Total Agents</p>
               <h2 className="text-xl font-semibold">
@@ -52,9 +52,9 @@ const AdminDashboard: React.FC = () => {
             <Users className="w-10 h-10 text-green-500" />
           </CardContent>
         </Card>
-
+        
         <Card>
-          <CardContent className="flex items-center justify-between p-6">
+          <CardContent className="flex items-center justify-between p-6 total-transactions">
             <div>
               <p className="text-muted-foreground text-sm">Transactions</p>
               <h2 className="text-xl font-semibold">
@@ -66,7 +66,7 @@ const AdminDashboard: React.FC = () => {
         </Card>
 
         <Card>
-          <CardContent className="flex items-center justify-between p-6">
+          <CardContent className="flex items-center justify-between p-6 system-balance">
             <div>
               <p className="text-muted-foreground text-sm">System Balance</p>
               <h2 className="text-xl font-semibold">

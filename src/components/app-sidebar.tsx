@@ -60,6 +60,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                           item.title === 'Settings'
                             ? 'profile-settings'
                             : ''
+                        } ${
+                          item.title === 'Manage Users'
+                            ? 'manage-users'
+                            : ''
+                        } ${
+                          item.title === 'Manage Agents'
+                            ? 'manage-agents'
+                            : ''
+                        } ${
+                          item.title === 'Transactions'
+                            ? 'transactions'
+                            : ''
                         }`}
                       >
                         {item.title}

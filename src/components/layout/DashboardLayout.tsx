@@ -87,9 +87,12 @@ export default function DashboardLayout() {
       content: 'Here you can see the total number of active agents.',
     },
     {
-      target: '.transaction-overview',
-      content:
-        'Check the total transactions and overall volume processed in the system.',
+      target: '.total-transactions',
+      content: 'View the total number of transactions processed in the system.',
+    },
+    {
+      target: '.system-balance',
+      content: 'Check the overall balance and volume available in the system.',
     },
     {
       target: '.manage-users',
@@ -111,12 +114,7 @@ export default function DashboardLayout() {
         'Use search bars and multiple filters on listing pages with pagination for better usability.',
     },
     {
-      target: '.system-settings',
-      content:
-        'Adjust system fees, transaction limits, or other settings here (optional).',
-    },
-    {
-      target: '.admin-profile',
+      target: '.profile-settings',
       content:
         'Manage your admin account settings: update name, email, or password.',
     },
@@ -183,7 +181,7 @@ export default function DashboardLayout() {
       if (userInfo?.data?.role === 'AGENT') {
         localStorage.setItem('agentDashboardTourSeen', 'true')
       }
-      if (userInfo?.data?.role === 'USER') {
+      if (userInfo?.data?.role === 'ADMIN') {
         localStorage.setItem('adminDashboardTourSeen', 'true')
       }
       setRun(false)
