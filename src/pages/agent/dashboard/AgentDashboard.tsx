@@ -107,7 +107,7 @@ const AgentDashboard: React.FC = () => {
             <CardTitle>Wallet Balance</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-green-600">
+            <p className="text-2xl font-bold text-green-600 wallet-balance">
               ৳ {wallet?.data?.balance}
             </p>
           </CardContent>
@@ -115,7 +115,7 @@ const AgentDashboard: React.FC = () => {
 
         {/* Tabs for actions */}
         <Tabs defaultValue="cashin" className="w-full">
-          <TabsList className="grid grid-cols-2 w-[300px] mx-auto">
+          <TabsList className="grid grid-cols-2 w-[300px] mx-auto cash-actions">
             <TabsTrigger value="cashin">Cash In</TabsTrigger>
             <TabsTrigger value="cashout">Cash Out</TabsTrigger>
           </TabsList>
@@ -195,7 +195,7 @@ const AgentDashboard: React.FC = () => {
 
         {/* Recent Transactions */}
 
-        <Card className="shadow-md">
+        <Card className="shadow-md recent-activity">
           <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <CardTitle>Recent Transactions</CardTitle>
             <Select value={filterType} onValueChange={setFilterType}>
@@ -258,7 +258,7 @@ const AgentDashboard: React.FC = () => {
           </CardContent>
         </Card>
         <Link to="/agent/transactions">
-          <Button variant="link" className="mt-2 p-0">
+          <Button variant="link" className="mt-2 p-0 all-transactions">
             View All Transactions →
           </Button>
         </Link>

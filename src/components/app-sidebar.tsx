@@ -40,7 +40,30 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 {item.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
-                      <Link to={item.url} className={`${item.title === 'Transactions' ? 'transaction-history' : ''}${item.title === 'Profile Settings' ? 'profile-settings' : ''}`}>{item.title}</Link>
+                      <Link
+                        to={item.url}
+                        className={`${
+                          item.title === 'Transactions'
+                            ? 'transaction-history'
+                            : ''
+                        } ${
+                          item.title === 'Profile Settings'
+                            ? 'profile-settings'
+                            : ''
+                        } ${item.title === 'Cash In' ? 'cash-in' : ''} ${
+                          item.title === 'Cash Out' ? 'cash-out' : ''
+                        } ${
+                          item.title === 'Transactions'
+                            ? 'all-transactions'
+                            : ''
+                        } ${
+                          item.title === 'Settings'
+                            ? 'profile-settings'
+                            : ''
+                        }`}
+                      >
+                        {item.title}
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
